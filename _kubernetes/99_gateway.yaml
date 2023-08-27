@@ -1,0 +1,11 @@
+##################################################################################################
+# Frontend Gateway
+##################################################################################################
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: frontend-gateway
+spec:
+  selector:
+    istio: ingressgateway
