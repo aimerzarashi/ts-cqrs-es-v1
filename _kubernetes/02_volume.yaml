@@ -15,4 +15,4 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "/var/lib/myprojects/cqrs-prototype-v1/web-ui/my-app"
+    path: "/var/lib/myprojects/ts-cqrs-es-v1/web-ui/my-app"
