@@ -1,0 +1,84 @@
+##################################################################################################
+# web-ui
+##################################################################################################
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-ui
+  labels:
+    app: web-ui
+spec:
+  ports:
+  - port: 3000
+    name: tcp
+  selector:
+    app: web-ui
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: web-ui
+  labels:
+    account: web-ui
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-ui
+  labels:
+    app: web-ui
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web-ui
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: web-ui
+        version: v1
+    spec:
+      serviceAccountName: web-ui
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        fsGroup: 0
+      containers:
+        - name: web-ui
+          image: node:latest
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 1000Mi
+            requests:
+              cpu: 500m
+              memory: 500Mi
+          tty: true
+          ports:
+            - containerPort: 3000
+          workingDir: /my-app
+          volumeMounts:
+          - name: web-ui-app
+            mountPath: /my-app
+      volumes:
+      - name: web-ui-app
+        persistentVolumeClaim:
+          claimName: web-ui-app
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: web-ui-app
+  labels:
+    app: web-ui
+spec:
+  storageClassName: web-ui-app
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500Mi

@@ -1,0 +1,18 @@
+##################################################################################################
+# web-ui
+##################################################################################################
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: web-ui-app
+  labels:
+    type: local
+spec:
+  storageClassName: web-ui-app
+  capacity:
+    storage: 500Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/var/lib/myprojects/cqrs-prototype-v1/web-ui/my-app"
