@@ -1,0 +1,18 @@
+##################################################################################################
+# playwright
+##################################################################################################
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: playwright-app
+  labels:
+    type: local
+spec:
+  storageClassName: playwright-app
+  capacity:
+    storage: 500Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/var/lib/myprojects/ts-cqrs-es-v1/test-runner/playwright/my-app"

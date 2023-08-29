@@ -1,0 +1,84 @@
+##################################################################################################
+# playwright
+##################################################################################################
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: playwright
+  labels:
+    app: playwright
+spec:
+  ports:
+  - port: 3000
+    name: tcp
+  selector:
+    app: playwright
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: playwright
+  labels:
+    account: playwright
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: playwright
+  labels:
+    app: playwright
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: playwright
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: playwright
+        version: v1
+    spec:
+      serviceAccountName: playwright
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        fsGroup: 0
+      containers:
+        - name: playwright
+          image: mcr.microsoft.com/playwright:v1.37.0-jammy
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 1000Mi
+            requests:
+              cpu: 500m
+              memory: 500Mi
+          tty: true
+          ports:
+            - containerPort: 3000
+          workingDir: /my-app
+          volumeMounts:
+          - name: playwright-app
+            mountPath: /my-app
+      volumes:
+      - name: playwright-app
+        persistentVolumeClaim:
+          claimName: playwright-app
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: playwright-app
+  labels:
+    app: playwright
+spec:
+  storageClassName: playwright-app
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500Mi
