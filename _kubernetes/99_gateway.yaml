@@ -9,3 +9,41 @@ metadata:
 spec:
   selector:
     istio: ingressgateway
+  servers:
+  - hosts:
+    - "web-ui.dev.localhost"
+    port:
+      name: public-http
+      number: 80
+      protocol: HTTP
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - "web-ui.dev.localhost"
+    port:
+      number: 443
+      name: public-https
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: tls-credential
+##################################################################################################
+# web-ui VirtualService
+##################################################################################################
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: web-ui
+spec:
+  hosts:
+    - "web-ui.dev.localhost"
+  gateways:
+    - frontend-gateway
+  http:
+  - route:
+    - destination:
+        host:
+          web-ui.sandbox.svc.cluster.local
+        port:
+          number: 3000
