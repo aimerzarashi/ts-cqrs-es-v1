@@ -8,6 +8,7 @@ metadata:
   name: web-ui
   labels:
     app: web-ui
+    service: web-ui
 spec:
   ports:
   - port: 3000
