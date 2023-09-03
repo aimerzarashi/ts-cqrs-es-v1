@@ -11,7 +11,7 @@ spec:
     istio: ingressgateway
   servers:
   - hosts:
-    - "web-ui.dev.localhost"
+    - web-ui.dev.localhost
     port:
       name: public-http
       number: 80
@@ -19,7 +19,7 @@ spec:
     tls:
       httpsRedirect: true
   - hosts:
-    - "web-ui.dev.localhost"
+    - web-ui.dev.localhost
     port:
       number: 443
       name: public-https
@@ -37,7 +37,7 @@ metadata:
   name: web-ui
 spec:
   hosts:
-    - "web-ui.dev.localhost"
+    - web-ui.dev.localhost
   gateways:
     - frontend-gateway
   http:
