@@ -1,0 +1,66 @@
+##################################################################################################
+# authn-smtp
+##################################################################################################
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: authn-smtp
+  labels:
+    app: authn-smtp
+    service: authn-smtp
+spec:
+  ports:
+  - port: 8025
+    name: tcp-external
+  - port: 1025
+    name: tcp-internal
+  selector:
+    app: authn-smtp
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: authn-smtp
+  labels:
+    account: authn-smtp
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authn-smtp
+  labels:
+    app: authn-smtp
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: authn-smtp
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: authn-smtp
+        version: v1
+    spec:
+      serviceAccountName: authn-smtp
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        fsGroup: 0
+      containers:
+        - name: authn-smtp
+          image: mailhog/mailhog:latest
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: 100m
+              memory: 100Mi
+            requests:
+              cpu: 50m
+              memory: 50Mi
+          tty: true
+          ports:
+            - containerPort: 8025
+            - containerPort: 1025
