@@ -12,6 +12,7 @@ spec:
   servers:
   - hosts:
     - web-ui.dev.localhost
+    - authn-smtp.dev.localhost
     port:
       name: public-http
       number: 80
@@ -20,6 +21,7 @@ spec:
       httpsRedirect: true
   - hosts:
     - web-ui.dev.localhost
+    - authn-smtp.dev.localhost
     port:
       number: 443
       name: public-https
@@ -47,3 +49,23 @@ spec:
           web-ui.sandbox.svc.cluster.local
         port:
           number: 3000
+##################################################################################################
+# authn-smtp VirtualService
+##################################################################################################
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: authn-smtp
+spec:
+  hosts:
+    - authn-smtp.dev.localhost
+  gateways:
+    - frontend-gateway
+  http:
+  - route:
+    - destination:
+        host:
+          authn-smtp.sandbox.svc.cluster.local
+        port:
+          number: 8025
