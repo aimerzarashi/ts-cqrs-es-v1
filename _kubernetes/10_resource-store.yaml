@@ -1,0 +1,106 @@
+##################################################################################################
+# resource-store Service
+##################################################################################################
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: resource-store
+  labels:
+    app: resource-store
+    service: resource-store
+spec:
+  ports:
+  - port: 5432
+    name: tcp
+  selector:
+    app: resource-store
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: resource-store
+  labels:
+    account: resource-store
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: resource-store
+  labels:
+    app: resource-store
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: resource-store
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: resource-store
+        version: v1
+    spec:
+      serviceAccountName: resource-store
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        fsGroup: 0
+      containers:
+        - name: resource-store
+          image: bitnami/postgresql:latest
+          imagePullPolicy: IfNotPresent 
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 1000Mi
+            requests:
+              cpu: 500m
+              memory: 500Mi
+          tty: true
+          ports:
+            - containerPort: 5432
+          envFrom:
+          - secretRef:
+              name: resource-store
+          volumeMounts:
+          - name: resource-store-data
+            mountPath: /bitnami/postgresql/data
+          - name: resource-store-conf
+            mountPath: /bitnami/postgresql/conf
+      volumes:
+      - name: resource-store-data
+        persistentVolumeClaim:
+          claimName: resource-store-data
+      - name: resource-store-conf
+        persistentVolumeClaim:
+          claimName: resource-store-conf
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: resource-store-data
+  labels:
+    app: resource-store
+spec:
+  storageClassName: resource-store-data
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500Mi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: resource-store-conf
+  labels:
+    app: resource-store
+spec:
+  storageClassName: resource-store-conf
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Mi

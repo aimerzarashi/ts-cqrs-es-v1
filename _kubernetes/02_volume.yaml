@@ -16,3 +16,36 @@ spec:
     - ReadWriteOnce
   hostPath:
     path: "/var/lib/myprojects/ts-cqrs-es-v1/web-ui/my-app"
+##################################################################################################
+# resource-store
+##################################################################################################
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: resource-store-data
+  labels:
+    type: local
+spec:
+  storageClassName: resource-store-data
+  capacity:
+    storage: 500Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/var/lib/myprojects/ts-cqrs-es-v1/resource-store/postgresql/data"
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: resource-store-conf
+  labels:
+    type: local
+spec:
+  storageClassName: resource-store-conf
+  capacity:
+    storage: 1Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/var/lib/myprojects/ts-cqrs-es-v1/resource-store/postgresql/conf"
