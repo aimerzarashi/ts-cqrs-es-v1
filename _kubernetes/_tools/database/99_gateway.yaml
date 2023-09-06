@@ -1,0 +1,49 @@
+##################################################################################################
+# Tools Gateway
+##################################################################################################
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: tools-gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - hosts:
+    - pgadmin.dev.localhost
+    port:
+      name: public-http
+      number: 80
+      protocol: HTTP
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - pgadmin.dev.localhost
+    port:
+      number: 443
+      name: public-https
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: tls-credential
+##################################################################################################
+# pgadmin VirtualService
+##################################################################################################
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: pgadmin
+spec:
+  hosts:
+    - "pgadmin.dev.localhost"
+  gateways:
+    - tools-gateway
+  http:
+  - route:
+    - destination:
+        host:
+          pgadmin.tools.svc.cluster.local
+        port:
+          number: 80
