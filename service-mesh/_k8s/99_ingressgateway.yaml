@@ -1,0 +1,33 @@
+##################################################################################################
+# Services
+##################################################################################################
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: services-gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - hosts:
+    - website-ui.dev.localhost
+    - website-smtp.dev.localhost
+    - database-pgadmin.dev.localhost
+    port:
+      name: public-http
+      number: 80
+      protocol: HTTP
+    tls:
+      httpsRedirect: true
+  - hosts:
+    - website-ui.dev.localhost
+    - website-smtp.dev.localhost
+    - database-pgadmin.dev.localhost
+    port:
+      number: 443
+      name: public-https
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: tls-credential

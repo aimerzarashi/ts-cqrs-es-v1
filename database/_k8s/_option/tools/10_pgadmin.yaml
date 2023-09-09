@@ -1,83 +1,85 @@
 ##################################################################################################
-# playwright
+# database-pgadmin
 ##################################################################################################
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: playwright
+  name: database-pgadmin
   labels:
-    app: playwright
-    service: playwright
+    app: database-pgadmin
+    service: database-pgadmin
 spec:
   ports:
-  - port: 3000
+  - port: 80
     name: tcp
   selector:
-    app: playwright
+    app: database-pgadmin
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: playwright
+  name: database-pgadmin
   labels:
-    account: playwright
+    account: database-pgadmin
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: playwright
+  name: database-pgadmin
   labels:
-    app: playwright
+    app: database-pgadmin
     version: v1
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: playwright
+      app: database-pgadmin
       version: v1
   template:
     metadata:
       labels:
-        app: playwright
+        app: database-pgadmin
         version: v1
     spec:
-      serviceAccountName: playwright
+      serviceAccountName: database-pgadmin
       securityContext:
         runAsUser: 0
         runAsGroup: 0
         fsGroup: 0
       containers:
-        - name: playwright
-          image: mcr.microsoft.com/playwright:v1.37.0-jammy
-          imagePullPolicy: IfNotPresent
+        - name: database-pgadmin
+          image: dpage/pgadmin4
+          imagePullPolicy: IfNotPresent 
           resources:
             limits:
-              cpu: 1000m
-              memory: 1000Mi
-            requests:
               cpu: 500m
               memory: 500Mi
+            requests:
+              cpu: 250m
+              memory: 250Mi
           tty: true
           ports:
-            - containerPort: 3000
-          workingDir: /my-app
+            - containerPort: 80
+          envFrom:
+          - secretRef:
+              name: database-pgadmin
           volumeMounts:
-          - name: playwright-app
-            mountPath: /my-app
+          - name: database-pgadmin
+            mountPath: /var/lib/pgadmin
       volumes:
-      - name: playwright-app
+      - name: database-pgadmin
         persistentVolumeClaim:
-          claimName: playwright-app
+          claimName: database-pgadmin
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: playwright-app
+  name: database-pgadmin
   labels:
-    app: playwright
+    app: database-pgadmin
 spec:
-  storageClassName: playwright-app
+  storageClassName: database-pgadmin
   accessModes:
     - ReadWriteOnce
   resources:

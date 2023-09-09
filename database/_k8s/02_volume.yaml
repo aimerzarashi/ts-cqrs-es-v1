@@ -1,0 +1,33 @@
+##################################################################################################
+# database-resource
+##################################################################################################
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: database-resource-data
+  labels:
+    type: local
+spec:
+  storageClassName: database-resource-data
+  capacity:
+    storage: 500Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/var/lib/myprojects/ts-cqrs-es-v1/database/resource/data"
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: database-resource-conf
+  labels:
+    type: local
+spec:
+  storageClassName: database-resource-conf
+  capacity:
+    storage: 1Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/var/lib/myprojects/ts-cqrs-es-v1/database/resource/conf"

@@ -1,54 +1,54 @@
 ##################################################################################################
-# resource-store Service
+# database-resource
 ##################################################################################################
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: resource-store
+  name: database-resource
   labels:
-    app: resource-store
-    service: resource-store
+    app: database-resource
+    service: database-resource
 spec:
   ports:
   - port: 5432
     name: tcp
   selector:
-    app: resource-store
+    app: database-resource
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: resource-store
+  name: database-resource
   labels:
-    account: resource-store
+    account: database-resource
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: resource-store
+  name: database-resource
   labels:
-    app: resource-store
+    app: database-resource
     version: v1
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: resource-store
+      app: database-resource
       version: v1
   template:
     metadata:
       labels:
-        app: resource-store
+        app: database-resource
         version: v1
     spec:
-      serviceAccountName: resource-store
+      serviceAccountName: database-resource
       securityContext:
         runAsUser: 0
         runAsGroup: 0
         fsGroup: 0
       containers:
-        - name: resource-store
+        - name: database-resource
           image: bitnami/postgresql:latest
           imagePullPolicy: IfNotPresent 
           resources:
@@ -63,28 +63,28 @@ spec:
             - containerPort: 5432
           envFrom:
           - secretRef:
-              name: resource-store
+              name: database-resource
           volumeMounts:
-          - name: resource-store-data
+          - name: database-resource-data
             mountPath: /bitnami/postgresql/data
-          - name: resource-store-conf
+          - name: database-resource-conf
             mountPath: /bitnami/postgresql/conf
       volumes:
-      - name: resource-store-data
+      - name: database-resource-data
         persistentVolumeClaim:
-          claimName: resource-store-data
-      - name: resource-store-conf
+          claimName: database-resource-data
+      - name: database-resource-conf
         persistentVolumeClaim:
-          claimName: resource-store-conf
+          claimName: database-resource-conf
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: resource-store-data
+  name: database-resource-data
   labels:
-    app: resource-store
+    app: database-resource
 spec:
-  storageClassName: resource-store-data
+  storageClassName: database-resource-data
   accessModes:
     - ReadWriteOnce
   resources:
@@ -94,11 +94,11 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: resource-store-conf
+  name: database-resource-conf
   labels:
-    app: resource-store
+    app: database-resource
 spec:
-  storageClassName: resource-store-conf
+  storageClassName: database-resource-conf
   accessModes:
     - ReadWriteOnce
   resources:

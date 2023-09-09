@@ -1,85 +1,83 @@
 ##################################################################################################
-# pgadmin
+# website-tests
 ##################################################################################################
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: pgadmin
+  name: website-tests
   labels:
-    app: pgadmin
-    service: pgadmin
+    app: website-tests
+    service: website-tests
 spec:
   ports:
-  - port: 80
+  - port: 3000
     name: tcp
   selector:
-    app: pgadmin
+    app: website-tests
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: pgadmin
+  name: website-tests
   labels:
-    account: pgadmin
+    account: website-tests
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pgadmin
+  name: website-tests
   labels:
-    app: pgadmin
+    app: website-tests
     version: v1
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: pgadmin
+      app: website-tests
       version: v1
   template:
     metadata:
       labels:
-        app: pgadmin
+        app: website-tests
         version: v1
     spec:
-      serviceAccountName: pgadmin
+      serviceAccountName: website-tests
       securityContext:
         runAsUser: 0
         runAsGroup: 0
         fsGroup: 0
       containers:
-        - name: pgadmin
-          image: dpage/pgadmin4
-          imagePullPolicy: IfNotPresent 
+        - name: website-tests
+          image: mcr.microsoft.com/playwright:v1.37.0-jammy
+          imagePullPolicy: IfNotPresent
           resources:
             limits:
+              cpu: 1000m
+              memory: 1000Mi
+            requests:
               cpu: 500m
               memory: 500Mi
-            requests:
-              cpu: 250m
-              memory: 250Mi
           tty: true
           ports:
-            - containerPort: 80
-          envFrom:
-          - secretRef:
-              name: pgadmin
+            - containerPort: 3000
+          workingDir: /my-app
           volumeMounts:
-          - name: pgadmin
-            mountPath: /var/lib/pgadmin
+          - name: website-tests-app
+            mountPath: /my-app
       volumes:
-      - name: pgadmin
+      - name: website-tests-app
         persistentVolumeClaim:
-          claimName: pgadmin
+          claimName: website-tests-app
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: pgadmin
+  name: website-tests-app
   labels:
-    app: pgadmin
+    app: website-tests
 spec:
-  storageClassName: pgadmin
+  storageClassName: website-tests-app
   accessModes:
     - ReadWriteOnce
   resources:

@@ -1,0 +1,18 @@
+##################################################################################################
+# database-pgadmin
+##################################################################################################
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: database-pgadmin
+  labels:
+    type: local
+spec:
+  storageClassName: database-pgadmin
+  capacity:
+    storage: 500Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/var/lib/myprojects/ts-cqrs-es-v1/database/pgadmin"

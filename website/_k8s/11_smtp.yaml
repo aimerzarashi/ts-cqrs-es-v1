@@ -1,14 +1,14 @@
 ##################################################################################################
-# authn-smtp
+# website-smtp
 ##################################################################################################
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: authn-smtp
+  name: website-smtp
   labels:
-    app: authn-smtp
-    service: authn-smtp
+    app: website-smtp
+    service: website-smtp
 spec:
   ports:
   - port: 8025
@@ -16,41 +16,41 @@ spec:
   - port: 1025
     name: tcp-internal
   selector:
-    app: authn-smtp
+    app: website-smtp
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: authn-smtp
+  name: website-smtp
   labels:
-    account: authn-smtp
+    account: website-smtp
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: authn-smtp
+  name: website-smtp
   labels:
-    app: authn-smtp
+    app: website-smtp
     version: v1
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: authn-smtp
+      app: website-smtp
       version: v1
   template:
     metadata:
       labels:
-        app: authn-smtp
+        app: website-smtp
         version: v1
     spec:
-      serviceAccountName: authn-smtp
+      serviceAccountName: website-smtp
       securityContext:
         runAsUser: 0
         runAsGroup: 0
         fsGroup: 0
       containers:
-        - name: authn-smtp
+        - name: website-smtp
           image: mailhog/mailhog:latest
           imagePullPolicy: IfNotPresent
           resources:

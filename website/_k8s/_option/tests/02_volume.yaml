@@ -1,18 +1,18 @@
 ##################################################################################################
-# playwright
+# website-tests
 ##################################################################################################
 ---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: playwright-app
+  name: website-tests-app
   labels:
     type: local
 spec:
-  storageClassName: playwright-app
+  storageClassName: website-tests-app
   capacity:
     storage: 500Mi
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "/var/lib/myprojects/ts-cqrs-es-v1/test-runner/playwright/my-app"
+    path: "/var/lib/myprojects/ts-cqrs-es-v1/website/tests"

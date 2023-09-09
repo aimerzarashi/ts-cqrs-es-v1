@@ -1,54 +1,54 @@
 ##################################################################################################
-# web-ui
+# website-ui
 ##################################################################################################
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: web-ui
+  name: website-ui
   labels:
-    app: web-ui
-    service: web-ui
+    app: website-ui
+    service: website-ui
 spec:
   ports:
   - port: 3000
     name: tcp
   selector:
-    app: web-ui
+    app: website-ui
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: web-ui
+  name: website-ui
   labels:
-    account: web-ui
+    account: website-ui
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: web-ui
+  name: website-ui
   labels:
-    app: web-ui
+    app: website-ui
     version: v1
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: web-ui
+      app: website-ui
       version: v1
   template:
     metadata:
       labels:
-        app: web-ui
+        app: website-ui
         version: v1
     spec:
-      serviceAccountName: web-ui
+      serviceAccountName: website-ui
       securityContext:
         runAsUser: 0
         runAsGroup: 0
         fsGroup: 0
       containers:
-        - name: web-ui
+        - name: website-ui
           image: node:latest
           imagePullPolicy: IfNotPresent
           resources:
@@ -65,21 +65,21 @@ spec:
           command: ["/bin/sh"]
           args: ["-c", "npm install; npm run dev"]
           volumeMounts:
-          - name: web-ui-app
+          - name: website-ui-app
             mountPath: /my-app
       volumes:
-      - name: web-ui-app
+      - name: website-ui-app
         persistentVolumeClaim:
-          claimName: web-ui-app
+          claimName: website-ui-app
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: web-ui-app
+  name: website-ui-app
   labels:
-    app: web-ui
+    app: website-ui
 spec:
-  storageClassName: web-ui-app
+  storageClassName: website-ui-app
   accessModes:
     - ReadWriteOnce
   resources:
