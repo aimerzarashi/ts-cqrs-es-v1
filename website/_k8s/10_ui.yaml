@@ -63,7 +63,7 @@ spec:
             - containerPort: 3000
           workingDir: /my-app
           command: ["/bin/sh"]
-          args: ["-c", "npm install; npm run dev"]
+          args: ["-c", "npm install; echo -e '\n' | npm run prisma migrate dev; npm run dev"]
           volumeMounts:
           - name: website-ui-app
             mountPath: /my-app
