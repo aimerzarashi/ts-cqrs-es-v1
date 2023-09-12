@@ -64,6 +64,17 @@ spec:
           workingDir: /my-app
           command: ["/bin/sh"]
           args: ["-c", "npm install; echo -e '\n' | npm run prisma migrate dev; npm run dev"]
+          env:
+          - name: AUTHN_SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: encrypt-key
+                key: AUTHN_SECRET_KEY
+          - name: AUTHZ_PUBLIC_KEY
+            valueFrom:
+              secretKeyRef:
+                name: encrypt-key
+                key: AUTHZ_PUBLIC_KEY
           volumeMounts:
           - name: website-ui-app
             mountPath: /my-app
