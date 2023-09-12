@@ -18,10 +18,10 @@ export default function RootLayout({
 }) {
   const session = getServerSession();
   return (
-    <AuthProvider>
-      <html lang="en">
+    <html lang="en">
+      <AuthProvider>
         <body className={inter.className}>{children}</body>
-      </html>
-    </AuthProvider>
+      </AuthProvider>
+    </html>
   );
 };
