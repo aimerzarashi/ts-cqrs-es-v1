@@ -10,6 +10,14 @@ const SignButton = () => {
     return <p>Loading....</p>;
   }
   
+  if(status === "unauthenticated"){
+    return (
+      <button onClick={() => signIn()}>
+        Sign In
+      </button>
+    );
+  }
+
   if(status === "authenticated") {
     return (
       <button onClick={() => signOut()}>
@@ -18,13 +26,6 @@ const SignButton = () => {
     );
   }
 
-  if(status === "unauthenticated"){
-    return (
-      <button onClick={() => signIn()}>
-        Sign In
-      </button>
-    );
-  }
 };
 
 export default SignButton;
