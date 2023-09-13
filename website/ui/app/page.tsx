@@ -1,5 +1,5 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+import Image from 'next/image';
+import styles from './page.module.css';
 import Link from "next/link";
 
 export default function Home() {
@@ -7,10 +7,7 @@ export default function Home() {
     <main>
       <div className='topMenu'>TOP MENU</div>
       <div>
-        <Link href="/tests/auth/server">server</Link>
-      </div>
-      <div>
-        <Link href="/tests/auth/client">client</Link>
+        <Link href="/tests/auth/">Auth Tests</Link>
       </div>
     </main>
   )
