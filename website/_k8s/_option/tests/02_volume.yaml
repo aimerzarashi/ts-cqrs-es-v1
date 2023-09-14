@@ -1,18 +1,18 @@
 ##################################################################################################
-# website-tests
+# website-test
 ##################################################################################################
 ---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: website-tests-app
+  name: website-test-app
   labels:
     type: local
 spec:
-  storageClassName: website-tests-app
+  storageClassName: website-test-app
   capacity:
     storage: 500Mi
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "/var/lib/myprojects/ts-cqrs-es-v1/website/tests"
+    path: "/var/lib/myprojects/ts-cqrs-es-v1/website/test"

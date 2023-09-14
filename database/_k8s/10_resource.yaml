@@ -8,7 +8,7 @@ metadata:
   name: database-resource
   labels:
     app: database-resource
-    service: database-resource
+    service: database
 spec:
   ports:
   - port: 5432

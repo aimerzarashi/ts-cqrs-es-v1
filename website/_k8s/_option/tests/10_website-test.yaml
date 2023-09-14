@@ -1,54 +1,54 @@
 ##################################################################################################
-# website-tests
+# website-test
 ##################################################################################################
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: website-tests
+  name: website-test
   labels:
-    app: website-tests
-    service: website-tests
+    app: website-test
+    service: website
 spec:
   ports:
   - port: 3000
     name: tcp
   selector:
-    app: website-tests
+    app: website-test
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: website-tests
+  name: website-test
   labels:
-    account: website-tests
+    account: website-test
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: website-tests
+  name: website-test
   labels:
-    app: website-tests
+    app: website-test
     version: v1
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: website-tests
+      app: website-test
       version: v1
   template:
     metadata:
       labels:
-        app: website-tests
+        app: website-test
         version: v1
     spec:
-      serviceAccountName: website-tests
+      serviceAccountName: website-test
       securityContext:
         runAsUser: 0
         runAsGroup: 0
         fsGroup: 0
       containers:
-        - name: website-tests
+        - name: website-test
           image: mcr.microsoft.com/playwright:v1.37.0-jammy
           imagePullPolicy: IfNotPresent
           resources:
@@ -63,21 +63,21 @@ spec:
             - containerPort: 3000
           workingDir: /my-app
           volumeMounts:
-          - name: website-tests-app
+          - name: website-test-app
             mountPath: /my-app
       volumes:
-      - name: website-tests-app
+      - name: website-test-app
         persistentVolumeClaim:
-          claimName: website-tests-app
+          claimName: website-test-app
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: website-tests-app
+  name: website-test-app
   labels:
-    app: website-tests
+    app: website-test
 spec:
-  storageClassName: website-tests-app
+  storageClassName: website-test-app
   accessModes:
     - ReadWriteOnce
   resources:

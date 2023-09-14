@@ -8,7 +8,7 @@ metadata:
   name: website-ui
   labels:
     app: website-ui
-    service: website-ui
+    service: website
 spec:
   ports:
   - port: 3000

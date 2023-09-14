@@ -8,7 +8,7 @@ metadata:
   name: website-smtp
   labels:
     app: website-smtp
-    service: website-smtp
+    service: website
 spec:
   ports:
   - port: 8025
