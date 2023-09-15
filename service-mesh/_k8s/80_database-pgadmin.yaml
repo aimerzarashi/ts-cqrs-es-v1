@@ -15,6 +15,6 @@ spec:
   - route:
     - destination:
         host:
-          database-pgadmin.tools.svc.cluster.local
+          database-pgadmin.services.svc.cluster.local
         port:
           number: 80
