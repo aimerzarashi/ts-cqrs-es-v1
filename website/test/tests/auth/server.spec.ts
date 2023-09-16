@@ -1,22 +1,27 @@
 import { test, expect } from '@playwright/test';
 
-const date = new Date();
-const yyyy = date.getFullYear().toString();
-const MM = ("00" + date.getMonth()).slice(-2);
-const dd = ("00" + date.getDate()).slice(-2);
-const hh = ("00" + date.getHours()).slice(-2);
-const mm = ("00" + date.getMinutes()).slice(-2);
-const ss = ("00" + date.getSeconds()).slice(-2);
-const email = yyyy + MM + dd + hh + mm + ss + '@example.com';
-console.info(email);
+let email;
 
-test.beforeEach(async ({ page }) => {
-  // Runs before each test and logs off.
-  await page.goto('https://website-ui.dev.localhost/api/auth/signout');
-  await page.getByRole('button', { name: 'Sign out' });
+test.describe.configure({ mode: 'serial' });
+
+test.beforeAll(async () => {
+  const date = new Date();
+  email = date.getFullYear().toString()
+        + ("00" + date.getMonth()).slice(-2)
+        + ("00" + date.getDate()).slice(-2)
+        + ("00" + date.getHours()).slice(-2)
+        + ("00" + date.getMinutes()).slice(-2)
+        + ("00" + date.getSeconds()).slice(-2)
+        + ("00" + date.getMilliseconds()).slice(-3)
+        + '@example.com';
+  console.info(email);
 });
 
 test('Show sign button when signed off', async ({ page }) => {
+  // Runs before each test and logs off.
+  await page.goto('https://website-ui.dev.localhost/api/auth/signout');
+  await page.getByRole('button', { name: 'Sign out' });
+
   await page.goto('https://website-ui.dev.localhost/tests/auth/server');
   await expect(page).toHaveScreenshot();
   await expect(page.getByRole('button', { name: 'Sign In' })).toBeAttached();
@@ -50,5 +55,3 @@ test('Show sign button when signed in', async ({ page }) => {
   await expect(page.getByRole('button', { name: 'Sign In' })).not.toBeAttached();
   await expect(page.getByRole('button', { name: 'Sign Out' })).toBeAttached();
 });
-
-
