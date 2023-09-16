@@ -11,6 +11,9 @@ export default function Page() {
       <div>
         <Link href="/tests/auth/client">client</Link>
       </div>
+      <div>
+        <Link href="/tests/auth/secure">secure</Link>
+      </div>
     </>
   )
 }

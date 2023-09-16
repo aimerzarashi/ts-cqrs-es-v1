@@ -1,11 +1,12 @@
+"use client";
+
 import React from "react";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/lib/auth/options";
 import SignButton from '@/components/menu/sign';
 
-export default async function Page() {
-  const session = await getServerSession(authOptions);
+export default function Page() {
+  const { data: session, status } = useSession();
 
   return (
     <main>
