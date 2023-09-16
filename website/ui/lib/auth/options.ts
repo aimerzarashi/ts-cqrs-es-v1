@@ -7,6 +7,9 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export const authOptions: NextAuthOptions = {
+  session: {
+    strategy: "jwt"
+  },
   adapter: PrismaAdapter(prisma) as Adapter,
   providers: [
     Email({
@@ -23,12 +26,13 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
-      console.log('callbacks signIn');
-      console.log(user);
-      console.log(account);
-      console.log(profile);
-      console.log(email);
-      console.log(credentials);
+      console.log({
+        type: 'callbacks signIn',
+        user: user,
+        account: profile,
+        email: email,
+        credentials: credentials
+      });
       return true;
     },
     async redirect({ url, baseUrl }) {
