@@ -62,8 +62,8 @@ spec:
           ports:
             - containerPort: 3000
           workingDir: /my-app
-#          command: ["/bin/sh"]
-#          args: ["-c", "npm install; echo -e '\n' | npm run prisma migrate dev; npm run dev"]
+          command: ["/bin/sh"]
+          args: ["-c", "npm install; npm run dev"]
           env:
           - name: AUTHZ_SECRET_KEY
             valueFrom:
