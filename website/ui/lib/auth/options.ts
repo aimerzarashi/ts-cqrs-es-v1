@@ -25,6 +25,7 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
+/*
     async signIn({ user, account, profile, email, credentials }) {
       console.log({
         type: 'callbacks signIn',
@@ -64,6 +65,7 @@ export const authOptions: NextAuthOptions = {
       });
       return token;
     }  
+*/
   },
   events: {
     async signIn(message) {
