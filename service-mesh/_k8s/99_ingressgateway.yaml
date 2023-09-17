@@ -13,6 +13,7 @@ spec:
   - hosts:
     - website-ui.dev.localhost
     - website-smtp.dev.localhost
+    - authz-api.dev.localhost
     - database-pgadmin.dev.localhost
     port:
       name: public-http
@@ -23,6 +24,7 @@ spec:
   - hosts:
     - website-ui.dev.localhost
     - website-smtp.dev.localhost
+    - authz-api.dev.localhost
     - database-pgadmin.dev.localhost
     port:
       number: 443
