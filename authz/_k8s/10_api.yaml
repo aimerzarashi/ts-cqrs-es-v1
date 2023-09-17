@@ -1,0 +1,98 @@
+##################################################################################################
+# authz-api
+##################################################################################################
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: authz-api
+  labels:
+    app: authz-api
+    service: authorization
+spec:
+  ports:
+  - port: 3000
+    name: tcp
+  selector:
+    app: authz-api
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: authz-api
+  labels:
+    account: authz-api
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authz-api
+  labels:
+    app: authz-api
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: authz-api
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: authz-api
+        version: v1
+    spec:
+      serviceAccountName: authz-api
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        fsGroup: 0
+      containers:
+        - name: authz-api
+          image: node:latest
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 1000Mi
+            requests:
+              cpu: 500m
+              memory: 500Mi
+          tty: true
+          ports:
+            - containerPort: 3000
+          workingDir: /my-app
+#          command: ["/bin/sh"]
+#          args: ["-c", "npm install; echo -e '\n' | npm run prisma migrate dev; npm run dev"]
+          env:
+          - name: AUTHZ_SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: authorization
+                key: AUTHZ_SECRET_KEY
+          - name: AUTHZ_PUBLIC_KEY
+            valueFrom:
+              secretKeyRef:
+                name: authorization
+                key: AUTHZ_PUBLIC_KEY
+          volumeMounts:
+          - name: authz-api-app
+            mountPath: /my-app
+      volumes:
+      - name: authz-api-app
+        persistentVolumeClaim:
+          claimName: authz-api-app
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: authz-api-app
+  labels:
+    app: authz-api
+spec:
+  storageClassName: authz-api-app
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500Mi

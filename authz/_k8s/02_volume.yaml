@@ -1,0 +1,18 @@
+##################################################################################################
+# authz-api
+##################################################################################################
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: authz-api-app
+  labels:
+    type: local
+spec:
+  storageClassName: authz-api-app
+  capacity:
+    storage: 500Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/var/lib/myprojects/ts-cqrs-es-v1/authz/api"
