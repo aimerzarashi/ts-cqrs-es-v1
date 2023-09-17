@@ -68,12 +68,17 @@ spec:
           - name: AUTHN_SECRET_KEY
             valueFrom:
               secretKeyRef:
-                name: encrypt-key
+                name: authentication
                 key: AUTHN_SECRET_KEY
+          - name: AUTHN_PUBLIC_KEY
+            valueFrom:
+              secretKeyRef:
+                name: authentication
+                key: AUTHN_PUBLIC_KEY
           - name: AUTHZ_PUBLIC_KEY
             valueFrom:
               secretKeyRef:
-                name: encrypt-key
+                name: authorization
                 key: AUTHZ_PUBLIC_KEY
           volumeMounts:
           - name: website-ui-app
