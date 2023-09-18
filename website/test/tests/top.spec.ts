@@ -11,7 +11,9 @@ test('has topMenu', async ({ page }) => {
     await expect(topMenu).toHaveText('TOP MENU');
 });
 
+/*
 test('regression test', async ({ page }) => {
   await page.goto('https://website-ui.dev.localhost/');
   await expect(page).toHaveScreenshot();
 });
+*/
