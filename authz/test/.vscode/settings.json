@@ -1,0 +1,7 @@
+{
+  "playwright.env": {
+
+  },
+  "playwright.reuseBrowser": true,
+  "playwright.showTrace": true
+}
