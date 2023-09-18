@@ -1,0 +1,85 @@
+##################################################################################################
+# authz-test
+##################################################################################################
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: authz-test
+  labels:
+    app: authz-test
+    service: authorization
+spec:
+  ports:
+  - port: 3000
+    name: tcp
+  selector:
+    app: authz-test
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: authz-test
+  labels:
+    account: authz-test
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authz-test
+  labels:
+    app: authz-test
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: authz-test
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: authz-test
+        version: v1
+    spec:
+      serviceAccountName: authz-test
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        fsGroup: 0
+      containers:
+        - name: authz-test
+          image: mcr.microsoft.com/playwright:v1.37.0-jammy
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 1000Mi
+            requests:
+              cpu: 500m
+              memory: 500Mi
+          tty: true
+          ports:
+            - containerPort: 3000
+          workingDir: /my-app
+          volumeMounts:
+          - name: authz-test-app
+            mountPath: /my-app
+      volumes:
+      - name: authz-test-app
+        persistentVolumeClaim:
+          claimName: authz-test-app
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: authz-test-app
+  labels:
+    app: authz-test
+spec:
+  storageClassName: authz-test-app
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500Mi

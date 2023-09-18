@@ -1,0 +1,18 @@
+##################################################################################################
+# authz-test
+##################################################################################################
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: authz-test-app
+  labels:
+    type: local
+spec:
+  storageClassName: authz-test-app
+  capacity:
+    storage: 500Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/var/lib/myprojects/ts-cqrs-es-v1/authz/test"
