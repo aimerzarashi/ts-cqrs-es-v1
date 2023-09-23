@@ -8,7 +8,7 @@ metadata:
   name: database-pgadmin
 spec:
   hosts:
-    - database-pgadmin.aimerzarashi.online
+    - database-pgadmin.aimerzarashi.com
   gateways:
     - services
   http:

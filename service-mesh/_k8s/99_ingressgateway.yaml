@@ -17,19 +17,19 @@ spec:
     tls:
       httpsRedirect: true
     hosts:
-    - website-ui.aimerzarashi.online
-    - website-smtp.aimerzarashi.online
-    - authz-api.aimerzarashi.online
-    - database-pgadmin.aimerzarashi.online
+    - website-ui.aimerzarashi.com
+    - website-smtp.aimerzarashi.com
+    - authz-api.aimerzarashi.com
+    - database-pgadmin.aimerzarashi.com
   - port:
       number: 443
       name: public-https
       protocol: HTTPS
     tls:
       mode: SIMPLE
-      credentialName: tls-credential-aimerzarashi.online
+      credentialName: tls-credential-aimerzarashi.com
     hosts:
-    - website-ui.aimerzarashi.online
-    - website-smtp.aimerzarashi.online
-    - authz-api.aimerzarashi.online
-    - database-pgadmin.aimerzarashi.online
+    - website-ui.aimerzarashi.com
+    - website-smtp.aimerzarashi.com
+    - authz-api.aimerzarashi.com
+    - database-pgadmin.aimerzarashi.com

@@ -8,7 +8,7 @@ metadata:
   name: authz-api
 spec:
   hosts:
-    - authz-api.aimerzarashi.online
+    - authz-api.aimerzarashi.com
   gateways:
     - services
   http:

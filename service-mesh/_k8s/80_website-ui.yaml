@@ -8,7 +8,7 @@ metadata:
   name: website-ui
 spec:
   hosts:
-    - website-ui.aimerzarashi.online
+    - website-ui.aimerzarashi.com
   gateways:
     - services
   http:
