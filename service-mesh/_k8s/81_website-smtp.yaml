@@ -8,9 +8,9 @@ metadata:
   name: website-smtp
 spec:
   hosts:
-    - website-smtp.dev.localhost
+    - website-smtp.aimerzarashi.online
   gateways:
-    - services-gateway
+    - services
   http:
   - route:
     - destination:

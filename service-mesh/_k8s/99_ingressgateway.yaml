@@ -1,35 +1,35 @@
-##################################################################################################
-# Services
-##################################################################################################
----
+# ##################################################################################################
+# # Services
+# ##################################################################################################
+# ---
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
-  name: services-gateway
+  name: services
 spec:
   selector:
     istio: ingressgateway
   servers:
-  - hosts:
-    - website-ui.dev.localhost
-    - website-smtp.dev.localhost
-    - authz-api.dev.localhost
-    - database-pgadmin.dev.localhost
-    port:
+  - port:
       name: public-http
       number: 80
       protocol: HTTP
     tls:
       httpsRedirect: true
-  - hosts:
-    - website-ui.dev.localhost
-    - website-smtp.dev.localhost
-    - authz-api.dev.localhost
-    - database-pgadmin.dev.localhost
-    port:
+    hosts:
+    - website-ui.aimerzarashi.online
+    - website-smtp.aimerzarashi.online
+    - authz-api.aimerzarashi.online
+    - database-pgadmin.aimerzarashi.online
+  - port:
       number: 443
       name: public-https
       protocol: HTTPS
     tls:
       mode: SIMPLE
-      credentialName: tls-credential
+      credentialName: tls-credential-aimerzarashi.online
+    hosts:
+    - website-ui.aimerzarashi.online
+    - website-smtp.aimerzarashi.online
+    - authz-api.aimerzarashi.online
+    - database-pgadmin.aimerzarashi.online

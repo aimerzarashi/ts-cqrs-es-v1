@@ -8,9 +8,9 @@ metadata:
   name: website-ui
 spec:
   hosts:
-    - website-ui.dev.localhost
+    - website-ui.aimerzarashi.online
   gateways:
-    - services-gateway
+    - services
   http:
   - route:
     - destination:
