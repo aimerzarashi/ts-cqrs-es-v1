@@ -8,9 +8,9 @@ metadata:
   name: database-pgadmin
 spec:
   hosts:
-    - database-pgadmin.dev.localhost
+    - database-pgadmin.aimerzarashi.online
   gateways:
-    - services-gateway
+    - services
   http:
   - route:
     - destination:
