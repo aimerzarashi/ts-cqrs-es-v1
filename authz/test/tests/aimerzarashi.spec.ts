@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const BASE_URL = 'https://authz-api.aimerzarashi.online';
+const BASE_URL = 'https://authz-api.aimerzarashi.com';
 
 test('get', async ({ request }) => {
   const response = await request.get(`${BASE_URL}`, {});
