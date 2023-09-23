@@ -1,0 +1,18 @@
+##################################################################################################
+# acme-client
+##################################################################################################
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: acme-client-app
+  labels:
+    type: local
+spec:
+  storageClassName: acme-client-app
+  capacity:
+    storage: 100Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/var/lib/myprojects/ts-cqrs-es-v1/service-mesh/certbot"

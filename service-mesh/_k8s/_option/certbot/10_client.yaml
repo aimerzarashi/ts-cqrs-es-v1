@@ -1,0 +1,86 @@
+##################################################################################################
+# acme-client
+##################################################################################################
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: acme-client
+  labels:
+    app: acme-client
+    service: website
+spec:
+  ports:
+  - port: 3000
+    name: tcp
+  selector:
+    app: acme-client
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: acme-client
+  labels:
+    account: acme-client
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: acme-client
+  labels:
+    app: acme-client
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: acme-client
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: acme-client
+        version: v1
+    spec:
+      serviceAccountName: acme-client
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        fsGroup: 0
+      containers:
+        - name: acme-client
+          image: certbot/certbot:latest
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: 500m
+              memory: 500Mi
+            requests:
+              cpu: 250m
+              memory: 100Mi
+          tty: true
+          ports:
+            - containerPort: 3000
+          workingDir: /etc/letsencrypt
+          command: ["/bin/sh"]
+          volumeMounts:
+          - name: acme-client-app
+            mountPath: /etc/letsencrypt
+      volumes:
+      - name: acme-client-app
+        persistentVolumeClaim:
+          claimName: acme-client-app
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: acme-client-app
+  labels:
+    app: acme-client
+spec:
+  storageClassName: acme-client-app
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
