@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { BASE_URL } from '../../lib/config';
 
 let email;
 
@@ -17,30 +18,21 @@ test.beforeAll(async () => {
   console.info(email);
 });
 
-test('Show sign button when signed off', async ({ page }) => {
-  await page.goto('https://website-ui.dev.localhost/api/auth/signout');
+test('Show secure page when signed off', async ({ page }) => {
+  // Runs before each test and logs off.
+  await page.goto(BASE_URL.UI + '/api/auth/signout');
   await page.getByRole('button', { name: 'Sign out' });
 
-  await page.goto('https://website-ui.dev.localhost/tests/auth/server');
-  await expect(page.getByRole('button', { name: 'Sign In' })).toBeAttached();
-  await expect(page.getByRole('button', { name: 'Sign Out' })).not.toBeAttached();
-});
-
-test('Behavior when pressing the sign-in button', async ({ page }) => {
-  await page.goto('https://website-ui.dev.localhost/tests/auth/server');
-  await page.getByRole('button', { name: 'Sign In' }).click();
-
-  // https://website-ui.dev.localhost/api/auth/signin'
+  await page.goto(BASE_URL.UI + '/tests/auth/secure');
   await expect(page).toHaveTitle('Sign In');
   await page.getByRole('textbox', { name: 'Email' }).fill(email);
   await page.getByRole('button', { name: 'Sign in with Email' }).click();
 
-  // https://website-ui.dev.localhost/api/auth/verify-request
   await expect(page).toHaveTitle('Verify Request');
 });
 
-test('Show sign button when signed in', async ({ page }) => {
-  await page.goto('https://website-smtp.dev.localhost/');
+test('Show secure page when signed in', async ({ page }) => {
+  await page.goto(BASE_URL.SMTP);
   await page.getByText(email).click();
   const page1Promise = page.waitForEvent('popup');
   await page.frameLocator('#preview-html').getByRole('link', { name: 'Sign in' }).click();
