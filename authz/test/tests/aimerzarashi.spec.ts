@@ -1,9 +1,8 @@
 import { test, expect } from '@playwright/test';
-
-const BASE_URL = 'https://authz-api.aimerzarashi.com';
+import { BASE_URL } from '../lib/config';
 
 test('get', async ({ request }) => {
-  const response = await request.get(`${BASE_URL}`, {});
+  const response = await request.get(`${BASE_URL.API}`, {});
   expect(response.ok()).toBeTruthy();
   expect(await response.json()).toEqual(expect.objectContaining({
     message: 'Hello World'
@@ -11,7 +10,7 @@ test('get', async ({ request }) => {
 });
 
 test('post', async ({ request }) => {
-  const response = await request.post(`${BASE_URL}`, {});
+  const response = await request.post(`${BASE_URL.API}`, {});
   expect(response.ok()).toBeTruthy();
   expect(await response.json()).toEqual(expect.objectContaining({
     message: "Hello World"
