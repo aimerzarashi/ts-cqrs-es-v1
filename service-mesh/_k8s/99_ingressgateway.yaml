@@ -19,7 +19,8 @@ spec:
     hosts:
     - website-ui.aimerzarashi.com
     - website-smtp.aimerzarashi.com
-    - authz-api.aimerzarashi.com
+    - iam-provider.aimerzarashi.com
+    - command-api.aimerzarashi.com
     - database-pgadmin.aimerzarashi.com
   - port:
       number: 443
@@ -31,5 +32,6 @@ spec:
     hosts:
     - website-ui.aimerzarashi.com
     - website-smtp.aimerzarashi.com
-    - authz-api.aimerzarashi.com
+    - iam-provider.aimerzarashi.com
+    - command-api.aimerzarashi.com
     - database-pgadmin.aimerzarashi.com

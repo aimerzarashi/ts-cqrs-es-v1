@@ -75,11 +75,6 @@ spec:
               secretKeyRef:
                 name: authentication
                 key: AUTHN_PUBLIC_KEY
-          - name: AUTHZ_PUBLIC_KEY
-            valueFrom:
-              secretKeyRef:
-                name: authorization
-                key: AUTHZ_PUBLIC_KEY
           volumeMounts:
           - name: website-ui-app
             mountPath: /my-app
