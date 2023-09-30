@@ -25,7 +25,6 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-/*
     async signIn({ user, account, profile, email, credentials }) {
       console.log({
         type: 'callbacks signIn',
@@ -42,6 +41,10 @@ export const authOptions: NextAuthOptions = {
         url: url,
         baseUrl: baseUrl
       });
+      // Allows relative callback URLs
+      if (url.startsWith("/")) return `${baseUrl}${url}`
+      // Allows callback URLs on the same origin
+      else if (new URL(url).origin === baseUrl) return url
       return baseUrl;
     },  
     async session({ session, token, user, newSession }) {
@@ -65,7 +68,6 @@ export const authOptions: NextAuthOptions = {
       });
       return token;
     }  
-*/
   },
   events: {
     async signIn(message) {
