@@ -1,0 +1,88 @@
+##################################################################################################
+# iam-provider
+##################################################################################################
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: iam-provider
+  labels:
+    app: iam-provider
+    service: iam
+spec:
+  ports:
+  - port: 8080
+    name: tcp
+  selector:
+    app: iam-provider
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: iam-provider
+  labels:
+    account: iam-provider
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iam-provider
+  labels:
+    app: iam-provider
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: iam-provider
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: iam-provider
+        version: v1
+    spec:
+      serviceAccountName: iam-provider
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        fsGroup: 0
+      containers:
+        - name: iam-provider
+          image: bitnami/keycloak
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 1000Mi
+            requests:
+              cpu: 500m
+              memory: 500Mi
+          tty: true
+          ports:
+            - containerPort: 8080
+          envFrom:
+          - secretRef:
+              name: iam-provider
+          - configMapRef:
+              name: iam-provider
+      # initContainers:
+      # - name: iam-provider-initdb
+      #   image: node:latest
+      #   workingDir: /my-app
+      #   command: ["/bin/sh"]
+      #   args: ["-c", "npm init -y; npm i -D prisma; npx prisma init; echo DATABASE_URL='postgres://my_user:my_password@database-resource:5432/iamprovider?schema=public' > .env; npx prisma migrate dev"]
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: iam-provider
+data:
+  KEYCLOAK_CREATE_ADMIN_USER: "true"
+  KEYCLOAK_DATABASE_VENDOR: "postgresql"
+  KEYCLOAK_DATABASE_HOST: "database-resource"
+  KEYCLOAK_DATABASE_PORT: "5432"
+  KEYCLOAK_DATABASE_NAME: "iamprovider"
+  KEYCLOAK_DATABASE_SCHEMA: "public"
+  KC_HOSTNAME_URL: https://iam-provider.aimerzarashi.com
+  KC_HOSTNAME_ADMIN_URL: https://iam-provider.aimerzarashi.com
