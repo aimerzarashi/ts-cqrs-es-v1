@@ -1,55 +1,55 @@
 ##################################################################################################
-# authz-test
+# command-api
 ##################################################################################################
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: authz-test
+  name: command-api
   labels:
-    app: authz-test
-    service: authorization
+    app: command-api
+    service: command
 spec:
   ports:
   - port: 3000
     name: tcp
   selector:
-    app: authz-test
+    app: command-api
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: authz-test
+  name: command-api
   labels:
-    account: authz-test
+    account: command-api
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: authz-test
+  name: command-api
   labels:
-    app: authz-test
+    app: command-api
     version: v1
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: authz-test
+      app: command-api
       version: v1
   template:
     metadata:
       labels:
-        app: authz-test
+        app: command-api
         version: v1
     spec:
-      serviceAccountName: authz-test
+      serviceAccountName: command-api
       securityContext:
         runAsUser: 0
         runAsGroup: 0
         fsGroup: 0
       containers:
-        - name: authz-test
-          image: mcr.microsoft.com/playwright:v1.38.0-jammy
+        - name: command-api
+          image: node:latest
           imagePullPolicy: IfNotPresent
           resources:
             limits:
@@ -62,22 +62,24 @@ spec:
           ports:
             - containerPort: 3000
           workingDir: /my-app
+          command: ["/bin/sh"]
+          args: ["-c", "npm install; npm run dev"]
           volumeMounts:
-          - name: authz-test-app
+          - name: command-api-app
             mountPath: /my-app
       volumes:
-      - name: authz-test-app
+      - name: command-api-app
         persistentVolumeClaim:
-          claimName: authz-test-app
+          claimName: command-api-app
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: authz-test-app
+  name: command-api-app
   labels:
-    app: authz-test
+    app: command-api
 spec:
-  storageClassName: authz-test-app
+  storageClassName: command-api-app
   accessModes:
     - ReadWriteOnce
   resources:
