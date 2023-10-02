@@ -84,5 +84,5 @@ data:
   KEYCLOAK_DATABASE_PORT: "5432"
   KEYCLOAK_DATABASE_NAME: "iamprovider"
   KEYCLOAK_DATABASE_SCHEMA: "public"
-  KC_HOSTNAME_URL: https://iam-provider.aimerzarashi.com
-  KC_HOSTNAME_ADMIN_URL: https://iam-provider.aimerzarashi.com
+  KC_HOSTNAME_URL: "https://iam-provider.aimerzarashi.com"
+  KC_HOSTNAME_ADMIN_URL: "https://iam-provider.aimerzarashi.com"
