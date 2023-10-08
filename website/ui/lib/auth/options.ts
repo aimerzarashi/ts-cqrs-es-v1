@@ -27,7 +27,7 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
-      console.log({
+      console.debug({
         type: 'callbacks signIn',
         user: user,
         account: profile,
@@ -36,13 +36,15 @@ export const authOptions: NextAuthOptions = {
       });
 
       // IAM providerにUserを登録する
-      const accessToken = await getAdminToken().then( accessToken => { accessToken } );
-      createUser(accessToken, user.email, user.email, user.email);
+      if (email == undefined && user.id == user.email) {
+        const accessToken = await getAdminToken().then( accessToken => { accessToken } );
+        createUser(accessToken, user.email, user.email, user.email);  
+      }
       
       return true;
     },
     async redirect({ url, baseUrl }) {
-      console.log({
+      console.debug({
         type: 'callbacks redirect',
         url: url,
         baseUrl: baseUrl
@@ -54,7 +56,7 @@ export const authOptions: NextAuthOptions = {
       return baseUrl;
     },  
     async session({ session, token, user, newSession }) {
-      console.log({
+      console.debug({
         type: 'callbacks session',
         session: session,
         token: token,
@@ -64,7 +66,7 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     async jwt({ token, user, account, profile, trigger }) {
-      console.log({
+      console.debug({
         type: 'callbacks jwt',
         token: token,
         user: user,
@@ -74,45 +76,45 @@ export const authOptions: NextAuthOptions = {
       });
 
       // IAM providerからTokenを取得する
-      const accessToken = await getToken(user.email, user.email).then( accessToken => { accessToken } );
-      console.log(accessToken);
+      const accessToken = await getToken(token.email, token.email).then( accessToken => { accessToken } );
+      console.debug(accessToken);
       
       return token;
     }  
   },
   events: {
     async signIn(message) {
-      console.log({
+      console.debug({
         type: 'events signIn',
         message: message
       });
     },
     async signOut(message) {
-      console.log({
+      console.debug({
         type: 'events signOut',
         message: message
       });
     },
     async createUser(message) {
-      console.log({
+      console.debug({
         type: 'events createUser',
         message: message
       });
     },
     async updateUser(message) {
-      console.log({
+      console.debug({
         type: 'events updateUser',
         message: message
       });
     },
     async linkAccount(message) {
-      console.log({
+      console.debug({
         type: 'events linkAccount',
         message: message
       });
     },
     async session(message) {
-      console.log({
+      console.debug({
         type: 'events session',
         message: message
       });
