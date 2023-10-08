@@ -37,8 +37,9 @@ export const authOptions: NextAuthOptions = {
 
       // IAM providerにUserを登録する
       if (email == undefined && user.id == user.email) {
-        const accessToken = await getAdminToken().then( accessToken => { accessToken } );
-        createUser(accessToken, user.email, user.email, user.email);  
+        const accessToken = await getAdminToken().then( accessToken => {
+          createUser(accessToken, user.email, user.email, user.email);
+        });
       }
       
       return true;
@@ -77,7 +78,9 @@ export const authOptions: NextAuthOptions = {
 
       // IAM providerからTokenを取得する
       const accessToken = await getToken(token.email, token.email).then( accessToken => { accessToken } );
-      console.debug(accessToken);
+      console.debug({
+        accessToken: accessToken
+      });
       
       return token;
     }  
