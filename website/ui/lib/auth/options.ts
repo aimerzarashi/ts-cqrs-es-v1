@@ -3,6 +3,7 @@ import { Adapter } from "next-auth/adapters";
 import Email from "next-auth/providers/email";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
+import { getAdminToken, createUser, getToken } from "@/lib/iam/api";
 
 const prisma = new PrismaClient();
 
@@ -33,6 +34,11 @@ export const authOptions: NextAuthOptions = {
         email: email,
         credentials: credentials
       });
+
+      // IAM providerにUserを登録する
+      const accessToken = await getAdminToken().then( accessToken => { accessToken } );
+      createUser(accessToken, user.email, user.email, user.email);
+      
       return true;
     },
     async redirect({ url, baseUrl }) {
@@ -66,6 +72,11 @@ export const authOptions: NextAuthOptions = {
         profile: profile,
         trigger: trigger
       });
+
+      // IAM providerからTokenを取得する
+      const accessToken = await getToken(user.email, user.email).then( accessToken => { accessToken } );
+      console.log(accessToken);
+      
       return token;
     }  
   },
