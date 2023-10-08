@@ -6,7 +6,7 @@ const iamClientId = process.env.IAM_CLIENT_ID;
 const iamClientSecret = process.env.IAM_CLIENT_SECRET;
 
 export async function createUser(accessToken, username, email, password) {
-  console.log({
+  console.debug({
     type: 'createUser',
     accessToken: accessToken,
     username: username,
@@ -34,7 +34,7 @@ export async function createUser(accessToken, username, email, password) {
 }
 
 export async function getAdminToken() {  
-  console.log('getAdminToken');
+  console.debug('getAdminToken');
   const res = await fetch(`${iamDomain}/realms/master/protocol/openid-connect/token`, {
     method: 'POST',
     headers: {
@@ -47,7 +47,7 @@ export async function getAdminToken() {
 };
 
 export async function getToken(username, password) {  
-  console.log({
+  console.debug({
     type: 'getToken',
     username: username,
     password: password
