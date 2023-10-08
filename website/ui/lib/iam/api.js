@@ -5,9 +5,24 @@ const iamRealm = process.env.IAM_REALM;
 const iamClientId = process.env.IAM_CLIENT_ID;
 const iamClientSecret = process.env.IAM_CLIENT_SECRET;
 
+export async function getAdminToken() {  
+  console.debug({
+    type: 'iam provider getAdminToken'
+  });
+  const res = await fetch(`${iamDomain}/realms/master/protocol/openid-connect/token`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: `client_id=admin-cli&grant_type=password&username=${iamAdminUsername}&password=${iamAdminPassword}`
+  });
+  return (await res.json())?.access_token;
+};
+
+
 export async function createUser(accessToken, username, email, password) {
   console.debug({
-    type: 'createUser',
+    type: 'iam provider createUser',
     accessToken: accessToken,
     username: username,
     email: email,
@@ -33,22 +48,9 @@ export async function createUser(accessToken, username, email, password) {
   });    
 }
 
-export async function getAdminToken() {  
-  console.debug('getAdminToken');
-  const res = await fetch(`${iamDomain}/realms/master/protocol/openid-connect/token`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': `Basic ${Buffer.from(`${iamClientId}:${iamClientSecret}`).toString('base64')}`
-    },
-    body: `client_id=admin-cli&grant_type=password&username=${iamAdminUsername}&password=${iamAdminPassword}`
-  });
-  return (await res.json())?.access_token;
-};
-
 export async function getToken(username, password) {  
   console.debug({
-    type: 'getToken',
+    type: 'iam provider getToken',
     username: username,
     password: password
   });
