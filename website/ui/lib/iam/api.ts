@@ -5,7 +5,7 @@ const iamRealm = process.env.IAM_REALM;
 const iamClientId = process.env.IAM_CLIENT_ID;
 const iamClientSecret = process.env.IAM_CLIENT_SECRET;
 
-export async function getAdminToken() {  
+export async function getAdminToken(): Promise<{ accessToken: string }> {  
   console.debug({
     type: 'iam provider getAdminToken'
   });
@@ -16,11 +16,12 @@ export async function getAdminToken() {
     },
     body: `client_id=admin-cli&grant_type=password&username=${iamAdminUsername}&password=${iamAdminPassword}`
   });
-  return (await res.json())?.access_token;
+  const token = await res.json();
+  return { accessToken: token?.access_token };
 };
 
 
-export async function createUser(accessToken, username, email, password) {
+export async function createUser(accessToken: string, username: string, email: string, password: string) {
   console.debug({
     type: 'iam provider createUser',
     accessToken: accessToken,
@@ -48,7 +49,7 @@ export async function createUser(accessToken, username, email, password) {
   });    
 }
 
-export async function getToken(username, password) {  
+export async function getToken(username: string, password: string): Promise<{accessToken:string, refreshToken: string}> {  
   console.debug({
     type: 'iam provider getToken',
     username: username,
@@ -62,5 +63,6 @@ export async function getToken(username, password) {
     },
     body: `grant_type=password&username=${username}&password=${password}`
   });
-  return (await res.json())?.access_token;
+  const token = await res.json();
+  return { accessToken: token?.access_token, refreshToken: token?.refresh_token };
 };

@@ -37,10 +37,14 @@ export const authOptions: NextAuthOptions = {
 
       // IAM providerにUserを登録する
       if (email == undefined && user.id == user.email) {
-        const accessToken = await getAdminToken().then( accessToken => {
-          createUser(accessToken, user.email, user.email, user.email);
-        });
-      }
+        const adminToken = await getAdminToken();
+        const iamUser = {
+          username: user.email? user.email : '',
+          email: user.email? user.email : '',
+          password: user.email? user.email : ''
+        };
+        createUser(adminToken.accessToken, iamUser.username, iamUser.password, iamUser.email);
+    }
       
       return true;
     },
@@ -64,7 +68,15 @@ export const authOptions: NextAuthOptions = {
         user: user,
         newSession: newSession
       });
-      return session;
+//      return session;
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          accessToken: token?.accessToken,
+          refreshToken: token?.refreshToken,
+        },
+      };
     },
     async jwt({ token, user, account, profile, trigger }) {
       console.debug({
@@ -77,11 +89,13 @@ export const authOptions: NextAuthOptions = {
       });
 
       // IAM providerからTokenを取得する
-      const accessToken = await getToken(token.email, token.email).then( accessToken => { accessToken } );
-      console.debug({
-        accessToken: accessToken
-      });
-      
+      const iamUser = {
+        username: token.email ? token.email : '',
+        password: token.email ? token.email : '',
+      };
+      const userToken = await getToken(iamUser.username, iamUser.password);
+      token.accessToken = userToken.accessToken;
+      token.refreshToken = userToken.refreshToken;
       return token;
     }  
   },
