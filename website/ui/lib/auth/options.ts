@@ -88,14 +88,16 @@ export const authOptions: NextAuthOptions = {
         trigger: trigger
       });
 
-      // IAM providerからTokenを取得する
-      const iamUser = {
-        username: token.email ? token.email : '',
-        password: token.email ? token.email : '',
-      };
-      const userToken = await getToken(iamUser.username, iamUser.password);
-      token.accessToken = userToken.accessToken;
-      token.refreshToken = userToken.refreshToken;
+      if (! token?.accessToken){
+        // IAM providerからTokenを取得する
+        const iamUser = {
+          username: token.email ? token.email : '',
+          password: token.email ? token.email : '',
+        };
+        const userToken = await getToken(iamUser.username, iamUser.password);
+        token.accessToken = userToken.accessToken;
+        token.refreshToken = userToken.refreshToken;
+      }
       return token;
     }  
   },
