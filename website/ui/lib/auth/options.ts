@@ -43,7 +43,7 @@ export const authOptions: NextAuthOptions = {
           email: user.email? user.email : '',
           password: user.email? user.email : ''
         };
-        createUser(adminToken.accessToken, iamUser.username, iamUser.password, iamUser.email);
+        await createUser(adminToken.accessToken, iamUser.username, iamUser.password, iamUser.email);
     }
       
       return true;
