@@ -20,8 +20,7 @@ export async function getAdminToken(): Promise<{ accessToken: string }> {
   return { accessToken: token?.access_token };
 };
 
-
-export async function createUser(accessToken: string, username: string, email: string, password: string) {
+export async function createUser(accessToken: string, username: string, email: string, password: string): Promise<void> {
   console.debug({
     type: 'iam provider createUser',
     accessToken: accessToken,
