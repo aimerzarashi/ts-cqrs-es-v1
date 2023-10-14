@@ -6,7 +6,6 @@ const iamAdminPassword = process.env.IAM_ADMIN_PASSWORD;
 const iamRealm = process.env.IAM_REALM;
 const iamClientId = process.env.IAM_CLIENT_ID;
 const iamClientSecret = process.env.IAM_CLIENT_SECRET;
-const iamKeyId = process.env.JWKS_KEY_ID;
 
 export async function getAdminToken(): Promise<{ accessToken: string }> {  
   console.debug({
@@ -23,13 +22,11 @@ export async function getAdminToken(): Promise<{ accessToken: string }> {
   return { accessToken: token?.access_token };
 };
 
-export async function createUser(accessToken: string, username: string, email: string, password: string): Promise<void> {
+export async function createUser(accessToken: string, email: string): Promise<void> {
   console.debug({
     type: 'iam provider createUser',
     accessToken: accessToken,
-    username: username,
     email: email,
-    password: password
   });
   const res = await fetch(`${iamDomain}/admin/realms/${iamRealm}/users`, {
     method: 'POST',
@@ -38,24 +35,23 @@ export async function createUser(accessToken: string, username: string, email: s
       'Authorization': `Bearer ${accessToken}`
     },
     body: JSON.stringify({
-      username: username,
+      username: email,
       enabled: 'true',
       email: email,
       emailVerified: 'true',
       "credentials":[{
-        type: password,
-        value: password,
+        type: 'password',
+        value: email,
         temporary: 'false'
       }]
     })
   });    
 }
 
-export async function getToken(username: string, password: string): Promise<{accessToken:string, accessExpiresIn: number, refreshToken: string, refreshExpiresIn: number}> {  
+export async function getToken(email: string): Promise<{accessToken:string, accessExpiresIn: number, refreshToken: string, refreshExpiresIn: number}> {  
   console.debug({
     type: 'iam provider getToken',
-    username: username,
-    password: password
+    email: email
   });
   const res = await fetch(`${iamDomain}/realms/${process.env.IAM_REALM}/protocol/openid-connect/token`, {
     method: 'POST',
@@ -63,7 +59,7 @@ export async function getToken(username: string, password: string): Promise<{acc
       'Content-Type': 'application/x-www-form-urlencoded',
       'Authorization': `Basic ${Buffer.from(`${iamClientId}:${iamClientSecret}`).toString('base64')}`
     },
-    body: `grant_type=password&username=${username}&password=${password}`
+    body: `grant_type=password&username=${email}&password=${email}`
   });
   const token = await res.json();
 
@@ -80,11 +76,10 @@ export async function getToken(username: string, password: string): Promise<{acc
   return { accessToken: token?.access_token, accessExpiresIn: accessExpiresIn, refreshToken: token?.refresh_token, refreshExpiresIn: refreshExpiresIn };
 };
 
-export async function refreshToken(username: string, password: string, refreshToken: string): Promise<{accessToken:string, accessExpiresIn: number, refreshToken: string, refreshExpiresIn: number}> {  
+export async function refreshToken(email: string, refreshToken: string): Promise<{accessToken:string, accessExpiresIn: number, refreshToken: string, refreshExpiresIn: number}> {  
   console.debug({
     type: 'iam provider getToken',
-    username: username,
-    password: password
+    email: email
   });
   const res = await fetch(`${iamDomain}/realms/${process.env.IAM_REALM}/protocol/openid-connect/token`, {
     method: 'POST',
@@ -92,7 +87,7 @@ export async function refreshToken(username: string, password: string, refreshTo
       'Content-Type': 'application/x-www-form-urlencoded',
       'Authorization': `Basic ${Buffer.from(`${iamClientId}:${iamClientSecret}`).toString('base64')}`
     },
-    body: `grant_type=password&username=${username}&password=${password}&token=${refreshToken}`
+    body: `grant_type=password&username=${email}&password=${email}&token=${refreshToken}`
   });
   const token = await res.json();
 

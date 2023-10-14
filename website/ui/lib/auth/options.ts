@@ -38,12 +38,7 @@ export const authOptions: NextAuthOptions = {
       // IAM providerにUserを登録する
       if (email == undefined && user.id == user.email) {
         const adminToken = await getAdminToken();
-        const iamUser = {
-          username: user.email? user.email : '',
-          email: user.email? user.email : '',
-          password: user.email? user.email : ''
-        };
-        await createUser(adminToken.accessToken, iamUser.username, iamUser.password, iamUser.email);
+        await createUser(adminToken.accessToken, user.email);
     }
       
       return true;
@@ -92,23 +87,18 @@ export const authOptions: NextAuthOptions = {
         trigger: trigger
       });
 
-      // IAM providerからTokenを取得する
-      const iamUser = {
-        username: token.email ? token.email : '',
-        password: token.email ? token.email : '',
-      };
       const currentTimestamp = Math.floor(Date.now() / 1000);
-      if ( token.refreshExpiresIn ) {
-        if (token.refreshExpiresIn <= currentTimestamp) {
-          const userToken = await refreshToken(iamUser.username, iamUser.password, token.refreshToken);
-          token.accessToken = userToken.accessToken;
-          token.accessExpiresIn = userToken.accessExpiresIn;
-          token.refreshToken = userToken.refreshToken;
-          token.refreshExpiresIn = userToken.refreshExpiresIn;
-        }
+      if ( token.accessExpiresIn && token.accessExpiresIn <= currentTimestamp) {
+        // IAM providerからRefreshTokenで取得する
+        const userToken = await refreshToken(token.email as string, token.refreshToken);
+        token.accessToken = userToken.accessToken;
+        token.accessExpiresIn = userToken.accessExpiresIn;
+        token.refreshToken = userToken.refreshToken;
+        token.refreshExpiresIn = userToken.refreshExpiresIn;
       }
-      if (! token.accessToken || token.accessExpiresIn <= currentTimestamp) {
-        const userToken = await getToken(iamUser.username, iamUser.password);
+      if (! token.accessToken) {
+        // IAM providerからTokenを取得する
+        const userToken = await getToken(token.email as string);
         token.accessToken = userToken.accessToken;
         token.accessExpiresIn = userToken.accessExpiresIn;
         token.refreshToken = userToken.refreshToken;
