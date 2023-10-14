@@ -39,7 +39,7 @@ export const authOptions: NextAuthOptions = {
       if (email == undefined && user.id == user.email) {
         const adminToken = await getAdminToken();
         await createUser(adminToken.accessToken, user.email);
-    }
+      }
       
       return true;
     },
@@ -96,7 +96,7 @@ export const authOptions: NextAuthOptions = {
         token.refreshToken = userToken.refreshToken;
         token.refreshExpiresIn = userToken.refreshExpiresIn;
       }
-      if (! token.accessToken) {
+      if (! token.accessToken || (token.refreshExpiresIn && token.refreshExpiresIn <= currentTimestamp) ) {
         // IAM providerからTokenを取得する
         const userToken = await getToken(token.email as string);
         token.accessToken = userToken.accessToken;
