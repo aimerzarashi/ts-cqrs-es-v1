@@ -3,7 +3,7 @@ import { Adapter } from "next-auth/adapters";
 import Email from "next-auth/providers/email";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
-import { getAdminToken, createUser, getToken } from "@/lib/iam/api";
+import { getAdminToken, createUser, getToken, refreshToken } from "@/lib/iam/api";
 
 const prisma = new PrismaClient();
 
@@ -73,9 +73,13 @@ export const authOptions: NextAuthOptions = {
         ...session,
         user: {
           ...session.user,
-          accessToken: token?.accessToken,
-          refreshToken: token?.refreshToken,
-        },
+          authorization: {
+            accessToken: token?.accessToken,
+            accessExpiresIn: token?.accessExpiresIn,
+            refreshToken: token?.refreshToken,
+            refreshExpiresIn: token?.refreshExpiresIn
+          }
+        }
       };
     },
     async jwt({ token, user, account, profile, trigger }) {
@@ -88,15 +92,27 @@ export const authOptions: NextAuthOptions = {
         trigger: trigger
       });
 
-      if (! token?.accessToken){
-        // IAM providerからTokenを取得する
-        const iamUser = {
-          username: token.email ? token.email : '',
-          password: token.email ? token.email : '',
-        };
+      // IAM providerからTokenを取得する
+      const iamUser = {
+        username: token.email ? token.email : '',
+        password: token.email ? token.email : '',
+      };
+      const currentTimestamp = Math.floor(Date.now() / 1000);
+      if ( token.refreshExpiresIn ) {
+        if (token.refreshExpiresIn <= currentTimestamp) {
+          const userToken = await refreshToken(iamUser.username, iamUser.password, token.refreshToken);
+          token.accessToken = userToken.accessToken;
+          token.accessExpiresIn = userToken.accessExpiresIn;
+          token.refreshToken = userToken.refreshToken;
+          token.refreshExpiresIn = userToken.refreshExpiresIn;
+        }
+      }
+      if (! token.accessToken || token.accessExpiresIn <= currentTimestamp) {
         const userToken = await getToken(iamUser.username, iamUser.password);
         token.accessToken = userToken.accessToken;
+        token.accessExpiresIn = userToken.accessExpiresIn;
         token.refreshToken = userToken.refreshToken;
+        token.refreshExpiresIn = userToken.refreshExpiresIn;
       }
       return token;
     }  
