@@ -78,7 +78,7 @@ export async function getToken(email: string): Promise<{accessToken:string, acce
 
 export async function refreshToken(email: string, refreshToken: string): Promise<{accessToken:string, accessExpiresIn: number, refreshToken: string, refreshExpiresIn: number}> {  
   console.debug({
-    type: 'iam provider getToken',
+    type: 'iam provider refreshToken',
     email: email
   });
   const res = await fetch(`${iamDomain}/realms/${process.env.IAM_REALM}/protocol/openid-connect/token`, {
