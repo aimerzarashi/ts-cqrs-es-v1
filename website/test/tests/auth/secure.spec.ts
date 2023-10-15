@@ -8,7 +8,7 @@ test.describe.configure({ mode: 'serial' });
 test.beforeAll(async () => {
   const date = new Date();
   email = date.getFullYear().toString()
-        + ("00" + date.getMonth()).slice(-2)
+        + ("00" + date.getMonth() + 1).slice(-2)
         + ("00" + date.getDate()).slice(-2)
         + ("00" + date.getHours()).slice(-2)
         + ("00" + date.getMinutes()).slice(-2)
