@@ -7,6 +7,13 @@ const iamRealm = process.env.IAM_REALM;
 const iamClientId = process.env.IAM_CLIENT_ID;
 const iamClientSecret = process.env.IAM_CLIENT_SECRET;
 
+type UserToken = {
+  accessToken: string
+  accessExpiresIn: number
+  refreshToken: string
+  refreshExpiresIn: number
+}
+
 export async function getAdminToken(): Promise<{ accessToken: string }> {  
   console.debug({
     type: 'iam provider getAdminToken'
@@ -48,7 +55,7 @@ export async function createUser(accessToken: string, email: string): Promise<vo
   });    
 }
 
-export async function getToken(email: string): Promise<{accessToken:string, accessExpiresIn: number, refreshToken: string, refreshExpiresIn: number}> {  
+export async function getToken(email: string): Promise<UserToken> {  
   console.debug({
     type: 'iam provider getToken',
     email: email
@@ -81,7 +88,7 @@ export async function getToken(email: string): Promise<{accessToken:string, acce
   return { accessToken: token?.access_token, accessExpiresIn: accessExpiresIn, refreshToken: token?.refresh_token, refreshExpiresIn: refreshExpiresIn };
 };
 
-export async function refreshToken(refreshToken: string): Promise<{accessToken:string, accessExpiresIn: number, refreshToken: string, refreshExpiresIn: number}> {  
+export async function refreshToken(refreshToken: string): Promise<UserToken> {
   console.debug({
     type: 'iam provider refreshToken',
     refreshToken: refreshToken
@@ -111,5 +118,27 @@ export async function refreshToken(refreshToken: string): Promise<{accessToken:s
     }  
   }
 
-  return { accessToken: token?.access_token, accessExpiresIn: accessExpiresIn, refreshToken: token?.refresh_token, refreshExpiresIn: refreshExpiresIn };
+  const tokenToken: UserToken = {
+    accessToken: token?.access_token,
+    accessExpiresIn: accessExpiresIn,
+    refreshToken: token?.refresh_token,
+    refreshExpiresIn: refreshExpiresIn
+  }
+
+  return tokenToken;
 };
+
+export async function logout(refreshToken: string): Promise<void> {
+  console.debug({
+    type: 'iam provider logout',
+    email: refreshToken
+  });
+  const res = await fetch(`${iamDomain}/realms/${process.env.IAM_REALM}/protocol/openid-connect/logout`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': `Basic ${Buffer.from(`${iamClientId}:${iamClientSecret}`).toString('base64')}`
+    },
+    body: `refresh_token=${refreshToken}`
+  });
+}
