@@ -64,22 +64,27 @@ export async function getToken(email: string): Promise<{accessToken:string, acce
   const token = await res.json();
 
   let accessExpiresIn: number = 0;
-  let refreshExpiresIn: number = 0;
-  const decoded = jwt.decode(token?.access_token);
-  if (decoded) {
-    const jwtPayload = decoded as jwt.JwtPayload;
-    if (jwtPayload.exp) {
-      accessExpiresIn = jwtPayload?.exp;
-      refreshExpiresIn = jwtPayload?.exp + token?.refresh_expires_in - token?.expires_in;
-    }
+  if (token?.access_token) {
+    const decoded = jwt.decode(token?.access_token) as jwt.JwtPayload;
+    if (decoded.exp) {
+      accessExpiresIn = decoded.exp;
+    }  
   }
+  let refreshExpiresIn: number = 0;
+  if (token?.refresh_token) {
+    const decoded = jwt.decode(token?.refresh_token) as jwt.JwtPayload;
+    if (decoded.exp) {
+      refreshExpiresIn = decoded.exp;
+    }  
+  }
+
   return { accessToken: token?.access_token, accessExpiresIn: accessExpiresIn, refreshToken: token?.refresh_token, refreshExpiresIn: refreshExpiresIn };
 };
 
-export async function refreshToken(email: string, refreshToken: string): Promise<{accessToken:string, accessExpiresIn: number, refreshToken: string, refreshExpiresIn: number}> {  
+export async function refreshToken(refreshToken: string): Promise<{accessToken:string, accessExpiresIn: number, refreshToken: string, refreshExpiresIn: number}> {  
   console.debug({
     type: 'iam provider refreshToken',
-    email: email
+    refreshToken: refreshToken
   });
   const res = await fetch(`${iamDomain}/realms/${process.env.IAM_REALM}/protocol/openid-connect/token`, {
     method: 'POST',
@@ -87,19 +92,24 @@ export async function refreshToken(email: string, refreshToken: string): Promise
       'Content-Type': 'application/x-www-form-urlencoded',
       'Authorization': `Basic ${Buffer.from(`${iamClientId}:${iamClientSecret}`).toString('base64')}`
     },
-    body: `grant_type=password&username=${email}&password=${email}&token=${refreshToken}`
+    body: `grant_type=refresh_token&refresh_token=${refreshToken}`
   });
   const token = await res.json();
 
   let accessExpiresIn: number = 0;
-  let refreshExpiresIn: number = 0;
-  const decoded = jwt.decode(token?.access_token);
-  if (decoded) {
-    const jwtPayload = decoded as jwt.JwtPayload;
-    if (jwtPayload.exp) {
-      accessExpiresIn = jwtPayload?.exp;
-      refreshExpiresIn = jwtPayload?.exp + token?.refresh_expires_in - token?.expires_in;
-    }
+  if (token?.access_token) {
+    const decoded = jwt.decode(token?.access_token) as jwt.JwtPayload;
+    if (decoded.exp) {
+      accessExpiresIn = decoded.exp;
+    }  
   }
+  let refreshExpiresIn: number = 0;
+  if (token?.refresh_token) {
+    const decoded = jwt.decode(token?.refresh_token) as jwt.JwtPayload;
+    if (decoded.exp) {
+      refreshExpiresIn = decoded.exp;
+    }  
+  }
+
   return { accessToken: token?.access_token, accessExpiresIn: accessExpiresIn, refreshToken: token?.refresh_token, refreshExpiresIn: refreshExpiresIn };
 };

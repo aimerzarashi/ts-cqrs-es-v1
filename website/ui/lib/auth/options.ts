@@ -89,12 +89,14 @@ export const authOptions: NextAuthOptions = {
 
       const currentTimestamp = Math.floor(Date.now() / 1000);
       if ( token.accessExpiresIn && token.accessExpiresIn <= currentTimestamp) {
-        // IAM providerからRefreshTokenで取得する
-        const userToken = await refreshToken(token.email as string, token.refreshToken);
-        token.accessToken = userToken.accessToken;
-        token.accessExpiresIn = userToken.accessExpiresIn;
-        token.refreshToken = userToken.refreshToken;
-        token.refreshExpiresIn = userToken.refreshExpiresIn;
+        if (token.refreshExpiresIn && currentTimestamp < token.refreshExpiresIn) {
+          // IAM providerからRefreshTokenで取得する
+          const userToken = await refreshToken(token.refreshToken);
+          token.accessToken = userToken.accessToken;
+          token.accessExpiresIn = userToken.accessExpiresIn;
+          token.refreshToken = userToken.refreshToken;
+          token.refreshExpiresIn = userToken.refreshExpiresIn;
+        }
       }
       if (! token.accessToken || (token.refreshExpiresIn && token.refreshExpiresIn <= currentTimestamp) ) {
         // IAM providerからTokenを取得する
