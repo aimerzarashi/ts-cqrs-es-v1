@@ -3,7 +3,7 @@ import { Adapter } from "next-auth/adapters";
 import Email from "next-auth/providers/email";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
-import { getAdminToken, createUser, getToken, refreshToken } from "@/lib/iam/api";
+import { getAdminToken, createUser, getToken, refreshToken, logout } from "@/lib/iam/api";
 
 const prisma = new PrismaClient();
 
@@ -123,6 +123,9 @@ export const authOptions: NextAuthOptions = {
         type: 'events signOut',
         message: message
       });
+
+      //IAM providerにRefreshTokenでログアウトする
+      await logout(message.token.refreshToken);
     },
     async createUser(message) {
       console.debug({
