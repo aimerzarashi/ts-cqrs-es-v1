@@ -99,7 +99,7 @@ export const authOptions: NextAuthOptions = {
         }
       }
       if (! token.accessToken || (token.refreshExpiresIn && token.refreshExpiresIn <= currentTimestamp) ) {
-        // IAM providerからTokenを取得する
+        // IAM providerからユーザー認証でTokenを取得する
         const userToken = await getToken(token.email as string);
         token.accessToken = userToken.accessToken;
         token.accessExpiresIn = userToken.accessExpiresIn;
