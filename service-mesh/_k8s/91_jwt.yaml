@@ -1,0 +1,29 @@
+apiVersion: security.istio.io/v1beta1
+kind: RequestAuthentication
+metadata:
+  name: require-keycloak-jwt
+spec:
+  selector:
+    matchLabels:
+      app: command-api
+  jwtRules:
+  - issuer: https://iam-provider.aimerzarashi.com/realms/aimerzarashi
+    jwksUri: http://iam-provider:8080/realms/aimerzarashi/protocol/openid-connect/certs
+    fromHeaders:
+    - name: Authorization
+      prefix: 'Bearer '
+    forwardOriginalToken: true
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: command-api
+spec:
+  selector:
+    matchLabels:
+      app: command-api
+  action: ALLOW
+  rules:
+  - when:
+    - key: request.auth.claims[iss]
+      values: ["https://iam-provider.aimerzarashi.com/realms/aimerzarashi"]
