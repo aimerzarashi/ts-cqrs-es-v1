@@ -12,9 +12,11 @@ metadata:
 spec:
   ports:
   - port: 8025
-    name: tcp-external
+    name: external
+    appProtocol: http
   - port: 1025
-    name: tcp-internal
+    name: internal
+    appProtocol: tcp
   selector:
     app: website-smtp
 ---

@@ -13,6 +13,7 @@ spec:
   ports:
   - port: 8080
     name: tcp
+    appProtocol: http
   selector:
     app: iam-provider
 ---
