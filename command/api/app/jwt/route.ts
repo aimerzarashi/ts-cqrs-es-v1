@@ -6,17 +6,16 @@ import { JwksClient } from "jwks-rsa";
 export async function GET() {
   const headersInstance = headers();
   const authorization = headersInstance.get('Authorization');
-  console.debug({authorization: authorization});
+  console.debug({ authorization: authorization });
   let accessToken: string = '';
   if (authorization) {
     accessToken = authorization.replace('Bearer ', '');
-    console.debug({accessToken: accessToken});
+    console.debug({ accessToken: accessToken });
   }
-
 
   let decodedToken;
   if (accessToken) {
-    decodedToken = jwt.decode(accessToken, {complete: true}) as jwt.Jwt;
+    decodedToken = jwt.decode(accessToken, { complete: true }) as jwt.Jwt;
   }
 
   const client = new JwksClient({
@@ -28,15 +27,16 @@ export async function GET() {
   const key = await client.getSigningKey(decodedToken?.header.kid);
   const signingKey = key.getPublicKey();
 
-  console.debug({signingKey: signingKey});
+  console.debug({ signingKey: signingKey });
 
   let decoded2;
   let accessTokenMessage;
-  jwt.verify(accessToken, signingKey, { algorithms: ['RS256'], complete: true }, function(err, decoded) {
+  jwt.verify(accessToken, signingKey, { algorithms: ['RS256'], complete: true }, function (err, decoded) {
     if (err) {
       accessTokenMessage = err;
     }
     decoded2 = decoded;
   });
 
-  return NextResponse.json({ decoded: decoded2, accessTokenMessage: accessTokenMessage }, { status: 200 }); }
+  return NextResponse.json({ decoded: decoded2, accessTokenMessage: accessTokenMessage }, { status: 200 });
+}
