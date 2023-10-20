@@ -1,10 +1,10 @@
-import React from 'react';
+import React from "react";
 import Link from "next/link";
 
 export default function Page() {
   return (
     <>
-      <div className='topMenu'>Auth Tests</div>
+      <div className="topMenu">Auth Tests</div>
       <div>
         <Link href="/tests/auth/server">server</Link>
       </div>
@@ -15,5 +15,5 @@ export default function Page() {
         <Link href="/tests/auth/secure">secure</Link>
       </div>
     </>
-  )
+  );
 }

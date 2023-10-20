@@ -40,7 +40,7 @@ export const authOptions: NextAuthOptions = {
         const adminToken = await getAdminToken();
         await createUser(adminToken.accessToken, user.email);
       }
-      
+
       return true;
     },
     async redirect({ url, baseUrl }) {
@@ -54,7 +54,7 @@ export const authOptions: NextAuthOptions = {
       // Allows callback URLs on the same origin
       else if (new URL(url).origin === baseUrl) return url
       return baseUrl;
-    },  
+    },
     async session({ session, token, user, newSession }) {
       console.debug({
         type: 'callbacks session',
@@ -63,7 +63,7 @@ export const authOptions: NextAuthOptions = {
         user: user,
         newSession: newSession
       });
-//      return session;
+      //      return session;
       return {
         ...session,
         user: {
@@ -88,7 +88,7 @@ export const authOptions: NextAuthOptions = {
       });
 
       const currentTimestamp = Math.floor(Date.now() / 1000);
-      if ( token.accessExpiresIn && token.accessExpiresIn <= currentTimestamp) {
+      if (token.accessExpiresIn && token.accessExpiresIn <= currentTimestamp) {
         if (token.refreshExpiresIn && currentTimestamp < token.refreshExpiresIn) {
           // IAM providerからRefreshTokenで取得する
           const userToken = await refreshToken(token.refreshToken);
@@ -98,7 +98,7 @@ export const authOptions: NextAuthOptions = {
           token.refreshExpiresIn = userToken.refreshExpiresIn;
         }
       }
-      if (! token.accessToken || (token.refreshExpiresIn && token.refreshExpiresIn <= currentTimestamp) ) {
+      if (!token.accessToken || (token.refreshExpiresIn && token.refreshExpiresIn <= currentTimestamp)) {
         // IAM providerからユーザー認証でTokenを取得する
         if (token.email) {
           const userToken = await getToken(token.email);
@@ -109,7 +109,7 @@ export const authOptions: NextAuthOptions = {
         }
       }
       return token;
-    }  
+    }
   },
   events: {
     async signIn(message) {

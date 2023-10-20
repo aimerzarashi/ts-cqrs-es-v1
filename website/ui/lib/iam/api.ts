@@ -14,7 +14,7 @@ type UserToken = {
   refreshExpiresIn: number
 }
 
-export async function getAdminToken(): Promise<{ accessToken: string }> {  
+export async function getAdminToken(): Promise<{ accessToken: string }> {
   console.debug({
     type: 'iam provider getAdminToken'
   });
@@ -46,16 +46,16 @@ export async function createUser(accessToken: string, email: string): Promise<vo
       enabled: 'true',
       email: email,
       emailVerified: 'true',
-      "credentials":[{
+      "credentials": [{
         type: 'password',
         value: email,
         temporary: 'false'
       }]
     })
-  });    
+  });
 }
 
-export async function getToken(email: string): Promise<UserToken> {  
+export async function getToken(email: string): Promise<UserToken> {
   console.debug({
     type: 'iam provider getToken',
     email: email
@@ -75,14 +75,14 @@ export async function getToken(email: string): Promise<UserToken> {
     const decoded = jwt.decode(token?.access_token) as jwt.JwtPayload;
     if (decoded.exp) {
       accessExpiresIn = decoded.exp;
-    }  
+    }
   }
   let refreshExpiresIn: number = 0;
   if (token?.refresh_token) {
     const decoded = jwt.decode(token?.refresh_token) as jwt.JwtPayload;
     if (decoded.exp) {
       refreshExpiresIn = decoded.exp;
-    }  
+    }
   }
 
   return { accessToken: token?.access_token, accessExpiresIn: accessExpiresIn, refreshToken: token?.refresh_token, refreshExpiresIn: refreshExpiresIn };
@@ -108,14 +108,14 @@ export async function refreshToken(refreshToken: string): Promise<UserToken> {
     const decoded = jwt.decode(token?.access_token) as jwt.JwtPayload;
     if (decoded.exp) {
       accessExpiresIn = decoded.exp;
-    }  
+    }
   }
   let refreshExpiresIn: number = 0;
   if (token?.refresh_token) {
     const decoded = jwt.decode(token?.refresh_token) as jwt.JwtPayload;
     if (decoded.exp) {
       refreshExpiresIn = decoded.exp;
-    }  
+    }
   }
 
   const tokenToken: UserToken = {
