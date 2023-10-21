@@ -11,9 +11,9 @@ metadata:
     service: website
 spec:
   ports:
-  - port: 3000
-    name: tcp
-    appProtocol: http
+    - port: 3000
+      name: tcp
+      appProtocol: http
   selector:
     app: website-ui
 ---
@@ -64,25 +64,29 @@ spec:
             - containerPort: 3000
           workingDir: /my-app
           command: ["/bin/sh"]
-          args: ["-c", "npm install; echo -e '\n' | npm run prisma migrate dev; npm run dev"]
+          args:
+            [
+              "-c",
+              "npm install; echo -e '\n' | npm run prisma migrate dev; npm run dev",
+            ]
           env:
-          - name: AUTHN_SECRET_KEY
-            valueFrom:
-              secretKeyRef:
-                name: authentication
-                key: AUTHN_SECRET_KEY
-          - name: AUTHN_PUBLIC_KEY
-            valueFrom:
-              secretKeyRef:
-                name: authentication
-                key: AUTHN_PUBLIC_KEY
+            - name: AUTHN_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: authentication
+                  key: AUTHN_SECRET_KEY
+            - name: AUTHN_PUBLIC_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: authentication
+                  key: AUTHN_PUBLIC_KEY
           volumeMounts:
-          - name: website-ui-app
-            mountPath: /my-app
+            - name: website-ui-app
+              mountPath: /my-app
       volumes:
-      - name: website-ui-app
-        persistentVolumeClaim:
-          claimName: website-ui-app
+        - name: website-ui-app
+          persistentVolumeClaim:
+            claimName: website-ui-app
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

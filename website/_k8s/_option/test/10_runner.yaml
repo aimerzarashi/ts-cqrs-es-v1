@@ -11,9 +11,9 @@ metadata:
     service: website
 spec:
   ports:
-  - port: 3000
-    name: tcp
-    appProtocol: tcp
+    - port: 3000
+      name: tcp
+      appProtocol: tcp
   selector:
     app: website-test
 ---
@@ -64,12 +64,12 @@ spec:
             - containerPort: 3000
           workingDir: /my-app
           volumeMounts:
-          - name: website-test-app
-            mountPath: /my-app
+            - name: website-test-app
+              mountPath: /my-app
       volumes:
-      - name: website-test-app
-        persistentVolumeClaim:
-          claimName: website-test-app
+        - name: website-test-app
+          persistentVolumeClaim:
+            claimName: website-test-app
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

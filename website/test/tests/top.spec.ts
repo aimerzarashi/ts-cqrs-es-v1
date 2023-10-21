@@ -7,9 +7,9 @@ test('has title', async ({ page }) => {
 });
 
 test('has topMenu', async ({ page }) => {
-    await page.goto(BASE_URL.UI);
-    const topMenu = page.locator('.topMenu');
-    await expect(topMenu).toHaveText('TOP MENU');
+  await page.goto(BASE_URL.UI);
+  const topMenu = page.locator('.topMenu');
+  await expect(topMenu).toHaveText('TOP MENU');
 });
 
 /*
