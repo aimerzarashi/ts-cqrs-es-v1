@@ -11,9 +11,9 @@ metadata:
     service: database
 spec:
   ports:
-  - port: 80
-    name: tcp
-    appProtocol: http
+    - port: 80
+      name: tcp
+      appProtocol: http
   selector:
     app: database-pgadmin
 ---
@@ -51,7 +51,7 @@ spec:
       containers:
         - name: database-pgadmin
           image: dpage/pgadmin4
-          imagePullPolicy: IfNotPresent 
+          imagePullPolicy: IfNotPresent
           resources:
             limits:
               cpu: 500m
@@ -63,15 +63,15 @@ spec:
           ports:
             - containerPort: 80
           envFrom:
-          - secretRef:
-              name: database-pgadmin
+            - secretRef:
+                name: database-pgadmin
           volumeMounts:
-          - name: database-pgadmin
-            mountPath: /var/lib/pgadmin
+            - name: database-pgadmin
+              mountPath: /var/lib/pgadmin
       volumes:
-      - name: database-pgadmin
-        persistentVolumeClaim:
-          claimName: database-pgadmin
+        - name: database-pgadmin
+          persistentVolumeClaim:
+            claimName: database-pgadmin
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

@@ -11,9 +11,9 @@ metadata:
     service: database
 spec:
   ports:
-  - port: 5432
-    name: tcp
-    appProtocol: tcp
+    - port: 5432
+      name: tcp
+      appProtocol: tcp
   selector:
     app: database-resource
 ---
@@ -51,7 +51,7 @@ spec:
       containers:
         - name: database-resource
           image: bitnami/postgresql:latest
-          imagePullPolicy: IfNotPresent 
+          imagePullPolicy: IfNotPresent
           resources:
             limits:
               cpu: 1000m
@@ -63,20 +63,20 @@ spec:
           ports:
             - containerPort: 5432
           envFrom:
-          - secretRef:
-              name: database-resource
+            - secretRef:
+                name: database-resource
           volumeMounts:
-          - name: database-resource-data
-            mountPath: /bitnami/postgresql/data
-          - name: database-resource-conf
-            mountPath: /bitnami/postgresql/conf
+            - name: database-resource-data
+              mountPath: /bitnami/postgresql/data
+            - name: database-resource-conf
+              mountPath: /bitnami/postgresql/conf
       volumes:
-      - name: database-resource-data
-        persistentVolumeClaim:
-          claimName: database-resource-data
-      - name: database-resource-conf
-        persistentVolumeClaim:
-          claimName: database-resource-conf
+        - name: database-resource-data
+          persistentVolumeClaim:
+            claimName: database-resource-data
+        - name: database-resource-conf
+          persistentVolumeClaim:
+            claimName: database-resource-conf
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
