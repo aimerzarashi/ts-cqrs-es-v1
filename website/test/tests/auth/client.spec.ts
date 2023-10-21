@@ -20,7 +20,7 @@ test.beforeAll(async () => {
 
 test('Show sign button when signed off', async ({ page }) => {
   await page.goto(BASE_URL.UI + '/api/auth/signout');
-  await page.getByRole('button', { name: 'Sign out' });
+  await page.getByRole('button', { name: 'Sign out' }).click;
 
   await page.goto(BASE_URL.UI + '/tests/auth/client');
   await expect(page.getByRole('button', { name: 'Sign In' })).toBeAttached();
@@ -44,6 +44,7 @@ test('Show sign button when signed in', async ({ page }) => {
   const page1Promise = page.waitForEvent('popup');
   await page.frameLocator('#preview-html').getByRole('link', { name: 'Sign in' }).click();
   const page1 = await page1Promise;
+  page1.close();
 
   await page1.waitForTimeout(2000);
   await expect(page1.getByRole('button', { name: 'Sign In' })).not.toBeAttached();
