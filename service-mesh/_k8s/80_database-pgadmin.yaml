@@ -12,9 +12,8 @@ spec:
   gateways:
     - services
   http:
-  - route:
-    - destination:
-        host:
-          database-pgadmin.services.svc.cluster.local
-        port:
-          number: 80
+    - route:
+        - destination:
+            host: database-pgadmin.services.svc.cluster.local
+            port:
+              number: 80

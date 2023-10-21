@@ -12,9 +12,8 @@ spec:
   gateways:
     - services
   http:
-  - route:
-    - destination:
-        host:
-          website-smtp.services.svc.cluster.local
-        port:
-          number: 8025
+    - route:
+        - destination:
+            host: website-smtp.services.svc.cluster.local
+            port:
+              number: 8025

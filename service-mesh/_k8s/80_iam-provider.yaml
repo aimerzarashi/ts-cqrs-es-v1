@@ -12,9 +12,8 @@ spec:
   gateways:
     - services
   http:
-  - route:
-    - destination:
-        host:
-          iam-provider.services.svc.cluster.local
-        port:
-          number: 8080
+    - route:
+        - destination:
+            host: iam-provider.services.svc.cluster.local
+            port:
+              number: 8080

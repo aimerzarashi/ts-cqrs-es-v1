@@ -10,30 +10,30 @@ spec:
   selector:
     istio: ingressgateway
   servers:
-  - port:
-      name: public-http
-      number: 80
-      protocol: HTTP
-    tls:
-      httpsRedirect: true
-    hosts:
-    - "*"
-    # - website-ui.aimerzarashi.com
-    # - website-smtp.aimerzarashi.com
-    # - iam-provider.aimerzarashi.com
-    # - command-api.aimerzarashi.com
-    # - database-pgadmin.aimerzarashi.com
-  - port:
-      number: 443
-      name: public-https
-      protocol: HTTPS
-    tls:
-      mode: SIMPLE
-      credentialName: tls-credential-aimerzarashi.com
-    hosts:
-    - "*"
-    # - website-ui.aimerzarashi.com
-    # - website-smtp.aimerzarashi.com
-    # - iam-provider.aimerzarashi.com
-    # - command-api.aimerzarashi.com
-    # - database-pgadmin.aimerzarashi.com
+    - port:
+        name: public-http
+        number: 80
+        protocol: HTTP
+      tls:
+        httpsRedirect: true
+      hosts:
+        - "*"
+      # - website-ui.aimerzarashi.com
+      # - website-smtp.aimerzarashi.com
+      # - iam-provider.aimerzarashi.com
+      # - command-api.aimerzarashi.com
+      # - database-pgadmin.aimerzarashi.com
+    - port:
+        number: 443
+        name: public-https
+        protocol: HTTPS
+      tls:
+        mode: SIMPLE
+        credentialName: tls-credential-aimerzarashi.com
+      hosts:
+        - "*"
+      # - website-ui.aimerzarashi.com
+      # - website-smtp.aimerzarashi.com
+      # - iam-provider.aimerzarashi.com
+      # - command-api.aimerzarashi.com
+      # - database-pgadmin.aimerzarashi.com

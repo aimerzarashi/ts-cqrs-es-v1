@@ -11,8 +11,8 @@ metadata:
     service: website
 spec:
   ports:
-  - port: 3000
-    name: tcp
+    - port: 3000
+      name: tcp
   selector:
     app: acme-client
 ---
@@ -64,12 +64,12 @@ spec:
           workingDir: /etc/letsencrypt
           command: ["/bin/sh"]
           volumeMounts:
-          - name: acme-client-app
-            mountPath: /etc/letsencrypt
+            - name: acme-client-app
+              mountPath: /etc/letsencrypt
       volumes:
-      - name: acme-client-app
-        persistentVolumeClaim:
-          claimName: acme-client-app
+        - name: acme-client-app
+          persistentVolumeClaim:
+            claimName: acme-client-app
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
