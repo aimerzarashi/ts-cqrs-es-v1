@@ -11,9 +11,9 @@ metadata:
     service: command
 spec:
   ports:
-  - port: 3000
-    name: tcp
-    appProtocol: http
+    - port: 3000
+      name: tcp
+      appProtocol: http
   selector:
     app: command-api
 ---
@@ -66,12 +66,12 @@ spec:
           command: ["/bin/sh"]
           args: ["-c", "npm install; npm run dev"]
           volumeMounts:
-          - name: command-api-app
-            mountPath: /my-app
+            - name: command-api-app
+              mountPath: /my-app
       volumes:
-      - name: command-api-app
-        persistentVolumeClaim:
-          claimName: command-api-app
+        - name: command-api-app
+          persistentVolumeClaim:
+            claimName: command-api-app
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
