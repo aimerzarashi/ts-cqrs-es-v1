@@ -1,11 +1,13 @@
-
 # admin
+
 ## well-known request
+
 ```
 https://iam-provider.aimerzarashi.com/realms/aimerzarashi/.well-known/uma2-configuration
 ```
 
-##  well-know response
+## well-know response
+
 ```
 {
     "issuer": "https://iam-provider.aimerzarashi.com/realms/aimerzarashi",
@@ -85,27 +87,35 @@ https://iam-provider.aimerzarashi.com/realms/aimerzarashi/.well-known/uma2-confi
 ```
 
 ## admin get token
+
 ```
 curl -X POST https://iam-provider.aimerzarashi.com/realms/master/protocol/openid-connect/token -H 'content-type: application/x-www-form-urlencoded' -d 'client_id=admin-cli&grant_type=password&username=admin&password=password'
 ```
 
 ## admin regist user
+
 ```
 curl -X POST https://iam-provider.aimerzarashi.com/admin/realms/aimerzarashi/users -d '{"username": "20231005211000@example.com", "enabled": true, "email": "20231005211000@example.com"}' -H 'Content-Type: application/json; charset=UTF-8' -H 'Authorization: Bearer xxx'
 ```
 
 # user get token
+
 ## client credentials
+
 ### client_secret_basic
+
 ```
 curl -X POST https://iam-provider.aimerzarashi.com/realms/aimerzarashi/protocol/openid-connect/token --user website-ui:gu7g0oCMBvKR09eHKMZjRy1EiYAPAy8F -H 'content-type: application/x-www-form-urlencoded' -d 'grant_type=password&username=20230930124500@example.com&password=password'
 ```
+
 ### client_secret_jwt
+
 ```
 curl -X POST https://iam-provider.aimerzarashi.com/realms/aimerzarashi/protocol/openid-connect/token --user website-ui:gu7g0oCMBvKR09eHKMZjRy1EiYAPAy8F -H 'content-type: application/x-www-form-urlencoded' -d 'grant_type=authorization_code&username=20230930124500@example.com'
 ```
 
 # user verify token
+
 ```
 curl -X POST https://iam-provider.aimerzarashi.com/realms/aimerzarashi/protocol/openid-connect/token/introspect --user website-ui:gu7g0oCMBvKR09eHKMZjRy1EiYAPAy8F -H 'content-type: application/x-www-form-urlencoded' -d 'token=xxx'
 ```

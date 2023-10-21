@@ -11,9 +11,9 @@ metadata:
     service: iam
 spec:
   ports:
-  - port: 8080
-    name: tcp
-    appProtocol: http
+    - port: 8080
+      name: tcp
+      appProtocol: http
   selector:
     app: iam-provider
 ---
@@ -63,10 +63,10 @@ spec:
           ports:
             - containerPort: 8080
           envFrom:
-          - secretRef:
-              name: iam-provider
-          - configMapRef:
-              name: iam-provider
+            - secretRef:
+                name: iam-provider
+            - configMapRef:
+                name: iam-provider
       # initContainers:
       # - name: iam-provider-initdb
       #   image: node:latest
