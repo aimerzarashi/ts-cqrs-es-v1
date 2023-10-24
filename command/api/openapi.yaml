@@ -1,60 +1,49 @@
 openapi: 3.0.0
 info:
   version: 1.0.0
-  title: Authorization API
-  description: A OpenAPI to illustrate Authorization API concepts
+  title: Command API
+  description: A OpenAPI to illustrate Command API concepts
 
 servers:
-  - url: https://authz-api.aimerzarashi.com
+  - url: https://command-api.aimerzarashi.com
 
 paths:
-  /authorization:
-    get:
-      description: Authorization endpoint
-      operationId: ReqestToken
-      parameters:
-        - in: header
-          name: Authorization
-          schema:
-            type: string
-          required: true
-          description: private_key_jwt
-      responses:
-        "302":
-          description: Found
-  /callback:
-    get:
-      description: callback endpoint
-      security:
-        - bearerAuth: []
-      responses:
-        "302":
-          description: Found
-  /decision:
-    get:
-      description: Authorization decision endpoint
-      security:
-        - bearerAuth: []
-      responses:
-        "302":
-          description: Found
-  /token:
+  /stock/items:
     post:
-      description: Token endpoint
-      operationId: ReqestToken
+      description: Create a new sales item
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SaleItem"
       responses:
-        "200":
-          description: Ok
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
+        "201":
+          description: 作成されました
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SaleItem"
 components:
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
-  responses:
-    UnauthorizedError:
-      description: Access token is missing or invalid
+  schemas:
+    SaleItem:
+      type: object
+      properties:
+        id:
+          type: string
+          format: cuid
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - createdAt
 security:
   - bearerAuth: []
