@@ -1,0 +1,107 @@
+##################################################################################################
+# database-event
+##################################################################################################
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: database-event
+  labels:
+    app: database-event
+    service: database
+spec:
+  ports:
+    - port: 5432
+      name: tcp
+      appProtocol: tcp
+  selector:
+    app: database-event
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: database-event
+  labels:
+    account: database-event
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: database-event
+  labels:
+    app: database-event
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: database-event
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: database-event
+        version: v1
+    spec:
+      serviceAccountName: database-event
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        fsGroup: 0
+      containers:
+        - name: database-event
+          image: bitnami/postgresql:latest
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 1000Mi
+            requests:
+              cpu: 500m
+              memory: 500Mi
+          tty: true
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - secretRef:
+                name: database-event
+          volumeMounts:
+            - name: database-event-data
+              mountPath: /bitnami/postgresql/data
+            - name: database-event-conf
+              mountPath: /bitnami/postgresql/conf
+      volumes:
+        - name: database-event-data
+          persistentVolumeClaim:
+            claimName: database-event-data
+        - name: database-event-conf
+          persistentVolumeClaim:
+            claimName: database-event-conf
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: database-event-data
+  labels:
+    app: database-event
+spec:
+  storageClassName: database-event-data
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500Mi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: database-event-conf
+  labels:
+    app: database-event
+spec:
+  storageClassName: database-event-conf
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Mi

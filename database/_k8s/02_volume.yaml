@@ -31,3 +31,36 @@ spec:
     - ReadWriteOnce
   hostPath:
     path: "/var/lib/myprojects/ts-cqrs-es-v1/database/resource/conf"
+##################################################################################################
+# database-event
+##################################################################################################
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: database-event-data
+  labels:
+    type: local
+spec:
+  storageClassName: database-event-data
+  capacity:
+    storage: 500Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/var/lib/myprojects/ts-cqrs-es-v1/database/event/data"
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: database-event-conf
+  labels:
+    type: local
+spec:
+  storageClassName: database-event-conf
+  capacity:
+    storage: 1Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/var/lib/myprojects/ts-cqrs-es-v1/database/event/conf"
