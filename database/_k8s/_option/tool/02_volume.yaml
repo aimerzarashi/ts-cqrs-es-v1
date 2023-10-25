@@ -11,7 +11,7 @@ metadata:
 spec:
   storageClassName: database-pgadmin
   capacity:
-    storage: 500Mi
+    storage: 1Mi
   accessModes:
     - ReadWriteOnce
   hostPath:
