@@ -67,12 +67,34 @@ spec:
                 name: iam-provider
             - configMapRef:
                 name: iam-provider
-      # initContainers:
-      # - name: iam-provider-initdb
-      #   image: node:latest
-      #   workingDir: /my-app
-      #   command: ["/bin/sh"]
-      #   args: ["-c", "npm init -y; npm i -D prisma; npx prisma init; echo DATABASE_URL='postgres://my_user:my_password@database-resource:5432/iamprovider?schema=public' > .env; npx prisma migrate dev"]
+      initContainers:
+        - name: wait-database-resource
+          image: busybox:1.28
+          command:
+            - sh
+            - -c
+            - |
+              while ! nc -z database-resource 5432; do
+                sleep 1
+              done
+        - name: iam-provider-initdb
+          image: node:latest
+          workingDir: /my-app
+          envFrom:
+            - secretRef:
+                name: iam-provider
+            - configMapRef:
+                name: iam-provider
+          command:
+            - sh
+            - -c
+            - |
+              npm init -y;
+              npm i -D prisma;
+              npx prisma init;
+              echo DATABASE_URL="postgres://$(KEYCLOAK_DATABASE_USER):$(KEYCLOAK_DATABASE_PASSWORD)@$(KEYCLOAK_DATABASE_HOST):$(KEYCLOAK_DATABASE_PORT)/$(KEYCLOAK_DATABASE_NAME)?schema=$(KEYCLOAK_DATABASE_SCHEMA)" > .env;
+              (npx prisma migrate dev --skip-generate; echo)
+              exit 0
 ---
 apiVersion: v1
 kind: ConfigMap
