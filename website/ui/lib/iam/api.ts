@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 
 const iamDomain = process.env.IAM_URL;
 const iamAdminUsername = process.env.IAM_ADMIN_USERNAME;
@@ -46,11 +47,14 @@ export async function createUser(accessToken: string, email: string): Promise<vo
       enabled: 'true',
       email: email,
       emailVerified: 'true',
-      "credentials": [{
-        type: 'password',
-        value: email,
-        temporary: 'false'
-      }]
+      // "credentials": [{
+      //   type: 'password',
+      //   value: email,
+      //   temporary: 'false'
+      // }]
+      attributes: {
+        accountId: crypto.randomUUID(),
+      }
     })
   });
 }
@@ -66,7 +70,8 @@ export async function getToken(email: string): Promise<UserToken> {
       'Content-Type': 'application/x-www-form-urlencoded',
       'Authorization': `Basic ${Buffer.from(`${iamClientId}:${iamClientSecret}`).toString('base64')}`
     },
-    body: `grant_type=password&username=${email}&password=${email}`
+    // body: `grant_type=password&username=${email}&password=${email}`
+    body: `grant_type=password&username=${email}`
   });
   const token = await res.json();
 
