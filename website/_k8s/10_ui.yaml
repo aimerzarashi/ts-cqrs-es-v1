@@ -70,12 +70,6 @@ spec:
               npm install;
               (npm run prisma migrate dev; echo);
               npm run dev;
-          # command: ["/bin/sh"]
-          # args:
-          #   [
-          #     "-c",
-          #     "npm install; echo -e '\n' | npm run prisma migrate dev; npm run dev",
-          #   ]
           env:
             - name: AUTHN_SECRET_KEY
               valueFrom:
