@@ -1,4 +1,4 @@
-import { Result, createSuccess, createError, pipe } from '@/lib/result/resultType';
+import { Result, createSuccess, createError, pipe } from '@/lib/function/result';
 import * as jwt from "jsonwebtoken";
 
 type Authorization = string | null;
@@ -21,7 +21,7 @@ function extractSubject(token: Token): Result<Subject> {
   if (!decoded || !decoded.payload.sub) {
     return createError(new Error("Invalid Authorization Header"));
   }
-  return createSuccess(decoded.payload.sub);
+  return createSuccess(decoded.payload.sub as string);
 }
 
 export function getSubject(authorization: Authorization): Result<Subject> {
