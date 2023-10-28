@@ -92,9 +92,40 @@ spec:
               npm init -y;
               npm i -D prisma;
               npx prisma init;
-              echo DATABASE_URL="postgres://$(KEYCLOAK_DATABASE_USER):$(KEYCLOAK_DATABASE_PASSWORD)@$(KEYCLOAK_DATABASE_HOST):$(KEYCLOAK_DATABASE_PORT)/$(KEYCLOAK_DATABASE_NAME)?schema=$(KEYCLOAK_DATABASE_SCHEMA)" > .env;
+              echo DATABASE_URL="postgres://$(USER):$(PASSWORD)@$(HOST):$(PORT)/$(DATABASE)?schema=$(SCHEMA)" > .env;
               (npx prisma migrate dev --skip-generate; echo)
               exit 0
+          env:
+            - name: USER
+              valueFrom:
+                secretKeyRef:
+                  name: iam-provider
+                  key: KEYCLOAK_DATABASE_USER
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: iam-provider
+                  key: KEYCLOAK_DATABASE_PASSWORD
+            - name: HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: iam-provider
+                  key: KEYCLOAK_DATABASE_HOST
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: iam-provider
+                  key: KEYCLOAK_DATABASE_PORT
+            - name: DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: iam-provider
+                  key: KEYCLOAK_DATABASE_NAME
+            - name: SCHEMA
+              valueFrom:
+                configMapKeyRef:
+                  name: iam-provider
+                  key: KEYCLOAK_DATABASE_SCHEMA
 ---
 apiVersion: v1
 kind: ConfigMap
