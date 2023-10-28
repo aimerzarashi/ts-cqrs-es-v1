@@ -62,11 +62,18 @@ spec:
           tty: true
           ports:
             - containerPort: 8080
+          volumeMounts:
+            - name: iam-provider-import
+              mountPath: /opt/bitnami/keycloak/data/import
           envFrom:
             - secretRef:
                 name: iam-provider
             - configMapRef:
                 name: iam-provider
+      volumes:
+        - name: iam-provider-import
+          persistentVolumeClaim:
+            claimName: iam-provider-import
       initContainers:
         - name: wait-database-resource
           image: busybox:1.28
@@ -136,7 +143,22 @@ data:
   KEYCLOAK_DATABASE_VENDOR: "postgresql"
   KEYCLOAK_DATABASE_HOST: "database-resource"
   KEYCLOAK_DATABASE_PORT: "5432"
-  KEYCLOAK_DATABASE_NAME: "iamprovider"
+  KEYCLOAK_DATABASE_NAME: "keycloak"
   KEYCLOAK_DATABASE_SCHEMA: "public"
   KC_HOSTNAME_URL: "https://iam-provider.aimerzarashi.com"
   KC_HOSTNAME_ADMIN_URL: "https://iam-provider.aimerzarashi.com"
+  KEYCLOAK_EXTRA_ARGS: "--import-realm"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: iam-provider-import
+  labels:
+    app: iam-provider
+spec:
+  storageClassName: iam-provider-import
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Mi

@@ -1,0 +1,18 @@
+##################################################################################################
+# iam-provider
+##################################################################################################
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: iam-provider-import
+  labels:
+    type: local
+spec:
+  storageClassName: iam-provider-import
+  capacity:
+    storage: 1Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/var/lib/myprojects/ts-cqrs-es-v1/iam/provider/import"
