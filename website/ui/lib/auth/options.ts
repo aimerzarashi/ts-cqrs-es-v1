@@ -37,8 +37,16 @@ export const authOptions: NextAuthOptions = {
 
       // IAM providerにUserを登録する
       if (email == undefined && user.id == user.email) {
-        const adminToken = await getAdminToken();
-        await createUser(adminToken.accessToken, user.email);
+        const getAdminTokenResult = await getAdminToken();
+        if (getAdminTokenResult.kind === "error") {
+          console.warn(getAdminTokenResult.error.message);
+          return false;
+        }
+        const createUserResult = await createUser(getAdminTokenResult.value.accessToken, user.email);
+        if (createUserResult.kind === "error") {
+          console.warn(createUserResult.error.message);
+          return false;
+        }
       }
 
       return true;
@@ -91,7 +99,12 @@ export const authOptions: NextAuthOptions = {
       if (token.accessExpiresIn && token.accessExpiresIn <= currentTimestamp) {
         if (token.refreshExpiresIn && currentTimestamp < token.refreshExpiresIn) {
           // IAM providerからRefreshTokenで取得する
-          const userToken = await refreshToken(token.refreshToken);
+          const userTokenResult = await refreshToken(token.refreshToken);
+          if (userTokenResult.kind === "error") {
+            console.warn(userTokenResult.error.message);
+            return token;
+          }
+          const userToken = userTokenResult.value;
           token.accessToken = userToken.accessToken;
           token.accessExpiresIn = userToken.accessExpiresIn;
           token.refreshToken = userToken.refreshToken;
@@ -101,7 +114,12 @@ export const authOptions: NextAuthOptions = {
       if (!token.accessToken || (token.refreshExpiresIn && token.refreshExpiresIn <= currentTimestamp)) {
         // IAM providerからユーザー認証でTokenを取得する
         if (token.email) {
-          const userToken = await getToken(token.email);
+          const userTokenResult = await getToken(token.email);
+          if (userTokenResult.kind === "error") {
+            console.warn(userTokenResult.error.message);
+            return token;
+          }
+          const userToken = userTokenResult.value;
           token.accessToken = userToken.accessToken;
           token.accessExpiresIn = userToken.accessExpiresIn;
           token.refreshToken = userToken.refreshToken;
