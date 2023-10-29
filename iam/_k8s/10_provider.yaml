@@ -75,7 +75,7 @@ spec:
           persistentVolumeClaim:
             claimName: iam-provider-import
       initContainers:
-        - name: wait-database-resource
+        - name: wait-for-db
           image: busybox:1.28
           command:
             - sh
@@ -84,7 +84,7 @@ spec:
               while ! nc -z database-resource 5432; do
                 sleep 1
               done
-        - name: iam-provider-initdb
+        - name: initdb
           image: node:latest
           workingDir: /my-app
           envFrom:
