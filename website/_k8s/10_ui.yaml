@@ -89,7 +89,7 @@ spec:
           persistentVolumeClaim:
             claimName: website-ui-app
       initContainers:
-        - name: wait-for-iam-provider
+        - name: wait-for-iam
           image: curlimages/curl:latest
           command:
             - sh
