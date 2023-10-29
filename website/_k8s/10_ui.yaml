@@ -88,6 +88,17 @@ spec:
         - name: website-ui-app
           persistentVolumeClaim:
             claimName: website-ui-app
+      initContainers:
+        - name: wait-for-iam-provider
+          image: curlimages/curl:latest
+          command:
+            - sh
+            - -c
+            - |
+              until curl -sSf "http://iam-provider:8080/realms/aimerzarashi/protocol/openid-connect/certs" >/dev/null; do
+                echo "Waiting for the API to become available..."
+                sleep 1
+              done
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
