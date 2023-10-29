@@ -91,6 +91,7 @@ spec:
       initContainers:
         - name: wait-for-iam
           image: curlimages/curl:latest
+          imagePullPolicy: IfNotPresent
           command:
             - sh
             - -c
