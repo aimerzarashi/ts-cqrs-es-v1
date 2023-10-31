@@ -70,17 +70,137 @@ spec:
               npm install;
               (npm run prisma migrate dev; echo);
               npm run dev;
+          volumeMounts:
+            - name: website-ui-app
+              mountPath: /my-app
+      initContainers:
+        - name: wait
+          image: curlimages/curl:latest
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - -c
+            - |
+              base_url=$(IAM_URL)
+              realm=$(IAM_REALM)
+              echo "Waiting for the API to become available..."
+              until curl -sf -o /dev/null -w "%{http_code}" "$base_url/realms/$realm/protocol/openid-connect/certs" -ne 200; do
+                sleep 1
+              done
+          envFrom:
+            - configMapRef:
+                name: website-ui
+        - name: init-authjs
+          image: curlimages/curl:latest
+          imagePullPolicy: IfNotPresent
+          workingDir: /my-app
+          command:
+            - sh
+            - -c
+            - |
+              echo 'DATABASE_URL="postgres://$(AUTH_DB_USERNAME):$(AUTH_DB_PASSWORD)@$(AUTH_DB_HOST):$(AUTH_DB_PORT)/$(AUTH_DB_NAME)"' >> .env.work
+              echo "NEXTAUTH_URL=$(NEXTAUTH_URL)" >> .env.work
+              echo "NEXTAUTH_SECRET=$(NEXTAUTH_SECRET)" >> .env.work
+              echo "SMTP_USER=$(SMTP_USERNAME)" >> .env.work
+              echo "SMTP_PASSWORD=$(SMTP_PASSWORD)" >> .env.work
+              echo "SMTP_HOST=$(SMTP_HOST)" >> .env.work
+              echo "SMTP_PORT=$(SMTP_PORT)" >> .env.work
+              echo "EMAIL_FROM=$(EMAIL_FROM)" >> .env.work
           env:
-            - name: AUTHN_SECRET_KEY
+            - name: AUTH_DB_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: authentication
-                  key: AUTHN_SECRET_KEY
-            - name: AUTHN_PUBLIC_KEY
+                  name: database-resource
+                  key: POSTGRESQL_USERNAME
+            - name: AUTH_DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: authentication
-                  key: AUTHN_PUBLIC_KEY
+                  name: database-resource
+                  key: POSTGRESQL_PASSWORD
+          envFrom:
+            - secretRef:
+                name: website-ui
+            - configMapRef:
+                name: website-ui
+          volumeMounts:
+            - name: website-ui-app
+              mountPath: /my-app
+        - name: init-iam
+          image: curlimages/curl:latest
+          imagePullPolicy: IfNotPresent
+          workingDir: /my-app
+          command:
+            - sh
+            - -c
+            - |
+              apk update
+              apk add jq
+
+              admin_username=$(IAM_ADMIN_USERNAME)
+              admin_password=$(IAM_ADMIN_PASSWORD)
+              base_url=$(IAM_URL)
+              realm=$(IAM_REALM)
+              client_id=$(IAM_CLIENT_ID)
+
+              response=$(curl -X POST \
+              -d "grant_type=password" \
+              -d "client_id=admin-cli" \
+              -d "username=$admin_username" \
+              -d "password=$admin_password" \
+              "$base_url/realms/master/protocol/openid-connect/token")
+
+              access_token=$(echo $response | jq -r '.access_token')
+
+              response=$(curl \
+              -H "Authorization: Bearer $access_token" \
+              "$base_url/admin/realms/$realm/clients")
+              echo $response
+
+              id=$(echo $response | jq -r '.[] | select(.clientId == "'"$client_id"'") | .id')
+
+              curl -s -X POST \
+              -H "Authorization: Bearer $access_token" \
+              -H "Content-Type: application/json" \
+              $base_url/admin/realms/$realm/clients/$id/client-secret -d '{}'
+
+              response=$(curl \
+              -H "Authorization: Bearer $access_token" \
+              "$base_url/admin/realms/$realm/clients")
+
+              secret=$(echo $response | jq -r '.[] | select(.clientId == "'"$client_id"'") | .secret')
+
+              echo "IAM_URL=$base_url" >> .env.work
+              echo "IAM_ADMIN_USERNAME=$admin_username" >> .env.work
+              echo "IAM_ADMIN_PASSWORD=$admin_password" >> .env.work
+              echo "IAM_REALM=$realm" >> .env.work
+              echo "IAM_CLIENT_ID=$client_id" >> .env.work
+              echo "IAM_CLIENT_SECRET=$secret" >> .env.work
+          env:
+            - name: IAM_ADMIN_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: iam-provider
+                  key: KEYCLOAK_ADMIN_USER
+            - name: IAM_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: iam-provider
+                  key: KEYCLOAK_ADMIN_PASSWORD
+          envFrom:
+            - configMapRef:
+                name: website-ui
+          volumeMounts:
+            - name: website-ui-app
+              mountPath: /my-app
+        - name: finish
+          image: curlimages/curl:latest
+          imagePullPolicy: IfNotPresent
+          workingDir: /my-app
+          command:
+            - sh
+            - -c
+            - |
+              mv .env.work .env.local
           volumeMounts:
             - name: website-ui-app
               mountPath: /my-app
@@ -88,18 +208,22 @@ spec:
         - name: website-ui-app
           persistentVolumeClaim:
             claimName: website-ui-app
-      initContainers:
-        - name: wait-for-iam
-          image: curlimages/curl:latest
-          imagePullPolicy: IfNotPresent
-          command:
-            - sh
-            - -c
-            - |
-              until curl -sSf "http://iam-provider:8080/realms/aimerzarashi/protocol/openid-connect/certs" >/dev/null; do
-                echo "Waiting for the API to become available..."
-                sleep 1
-              done
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: website-ui
+data:
+  NEXTAUTH_URL: "https://website-ui.aimerzarashi.com"
+  AUTH_DB_HOST: "database-resource"
+  AUTH_DB_PORT: "5432"
+  AUTH_DB_NAME: "authjs"
+  SMTP_HOST: "website-smtp"
+  SMTP_PORT: "1025"
+  EMAIL_FROM: "authenticator@aimerzarashi.com"
+  IAM_URL: "http://iam-provider:8080"
+  IAM_REALM: "aimerzarashi"
+  IAM_CLIENT_ID: "website-ui"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
