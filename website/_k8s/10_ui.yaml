@@ -82,9 +82,8 @@ spec:
             - -c
             - |
               base_url=$(IAM_URL)
-              realm=$(IAM_REALM)
               echo "Waiting for the API to become available..."
-              until curl -sf -o /dev/null -w "%{http_code}" "$base_url/realms/$realm/protocol/openid-connect/certs" -ne 200; do
+              until curl -sSf -o /dev/null -w "%{http_code}" "$base_url/realms/master/protocol/openid-connect/certs" -ne 200; do
                 sleep 1
               done
           envFrom:
