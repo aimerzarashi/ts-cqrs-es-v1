@@ -4,7 +4,6 @@ sequenceDiagram
   participant  EC Shop
   participant  Warehouse
   actor スタッフ
-​
   供給者->>EC Shop: 入荷予定入力
   EC Shop-)EC Shop: 在庫一覧更新
   EC Shop-)Warehouse: 入荷予定通知
@@ -20,5 +19,4 @@ sequenceDiagram
   Warehouse-)EC Shop: 入荷実績通知
   EC Shop-)EC Shop: 入荷予定消込
   EC Shop-)EC Shop: 在庫一覧更新
-​
 ```

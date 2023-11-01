@@ -4,7 +4,6 @@ sequenceDiagram
   participant  EC Shop
   participant  Warehouse
   actor スタッフ
-​
   消費者->>EC Shop: カート入力
   消費者->>EC Shop: 注文入力
   EC Shop-)Warehouse: 出荷予定通知
@@ -21,5 +20,4 @@ sequenceDiagram
   Warehouse-)EC Shop: 出荷実績通知
   EC Shop-)EC Shop: 出荷予定消込
   EC Shop-)EC Shop: 在庫一覧更新
-​
 ```
