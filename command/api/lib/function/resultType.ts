@@ -8,6 +8,7 @@ export type SuccessResult<T> = {
 export type ErrorResult = {
   kind: "error";
   error: Error;
+  value: any;
 };
 
 // Result型: 成功した場合はSuccessResult、エラーの場合はErrorResultとなるUnion Type
@@ -19,12 +20,12 @@ export function createSuccess<T>(value: T): SuccessResult<T> {
 }
 
 // エラーを作成するヘルパー関数
-export function createError(error: Error): ErrorResult {
-  return { kind: "error", error };
+export function createError(error: Error, value: any): ErrorResult {
+  return { kind: "error", error, value };
 }
 
 // パイプラインを実現するpipe関数
-export function pipe<T, R>(value: T, ...fns: ((x: T) => Result<R>)[]): Result<R> {
+export function pipe<T, R>(value: T, ...fns: ((x: any) => Result<any>)[]): Result<R> {
   return fns.reduce((result: Result<any>, fn) => {
     return result.kind === "success" ? fn(result.value) : result;
   }, createSuccess(value));
