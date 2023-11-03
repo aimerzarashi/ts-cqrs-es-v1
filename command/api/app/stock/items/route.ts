@@ -1,20 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 import { headers } from 'next/headers';
-import { getSubject } from '@/lib/auth/validation';
+import { extractAccountId } from '@/lib/auth/validation';
+import { paths } from '@/types/openapi';
+
+type RequestBody = paths['/stock/items']['post']['requestBody']['content']['application/json'];
 
 export async function POST(request: NextRequest) {
   const headersList = headers();
   const authorization = headersList.get('authorization');
 
-  const subject = getSubject(authorization);
-  if (subject.kind == 'error') {
+  const accountId = extractAccountId(authorization);
+  if (accountId.kind == 'error') {
     return NextResponse.json(
-      { error: 'Invalid Authorization Header' },
+      { error: accountId.error.message },
       { status: 401 }
     );
   }
 
-  console.debug({ subject: subject });
+  const requestbody: RequestBody = await request.json();
+  console.debug({ accountId: accountId, requestbody: requestbody });
 
-  return NextResponse.json({ message: "Hello World" }, { status: 201 });
+  return NextResponse.json({ message: 'success' }, { status: 201 });
 }
