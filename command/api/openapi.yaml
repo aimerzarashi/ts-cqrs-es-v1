@@ -1,49 +1,67 @@
 openapi: 3.0.0
 info:
-  version: 1.0.0
   title: Command API
-  description: A OpenAPI to illustrate Command API concepts
-
+  version: 1.0.0
 servers:
-  - url: https://command-api.aimerzarashi.com
-
+  - url: http://command-api.aimerzarashi.com
 paths:
-  /stock/items:
+  /inbound/plans:
     post:
-      description: Create a new sales item
+      summary: Register for inbound plans
       security:
-        - bearerAuth: []
+        - BearerAuth: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/SaleItem"
+              $ref: "#/components/schemas/InboundPlan"
       responses:
         "201":
-          description: 作成されました
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SaleItem"
+          description: Successful Created
+        "400":
+          description: Invalid request
+        "500":
+          description: Server error
+  /stock/items:
+    post:
+      summary: Register stock items
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StockItem"
+      responses:
+        "201":
+          description: Successful Successful Created
+        "400":
+          description: Invalid request
+        "500":
+          description: Server error
 components:
   securitySchemes:
-    bearerAuth:
+    BearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
   schemas:
-    SaleItem:
+    InboundPlan:
       type: object
       properties:
-        id:
+        arrivalDate:
           type: string
-          format: cuid
-        createdAt:
+          format: date
+        itemId:
           type: string
-          format: date-time
-      required:
-        - id
-        - createdAt
-security:
-  - bearerAuth: []
+        quantity:
+          type: number
+        unit:
+          type: string
+    StockItem:
+      type: object
+      properties:
+        name:
+          type: string
