@@ -1,0 +1,36 @@
+##################################################################################################
+# kafka
+##################################################################################################
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: eventmesh-kafka-app
+  labels:
+    type: local
+spec:
+  storageClassName: eventmesh-kafka-app
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/var/lib/myprojects/ts-cqrs-es-v1/eventmesh/kafka"
+##################################################################################################
+# zookeeper
+##################################################################################################
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: eventmesh-zookeeper-app
+  labels:
+    type: local
+spec:
+  storageClassName: eventmesh-zookeeper-app
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/var/lib/myprojects/ts-cqrs-es-v1/eventmesh/zookeeper"

@@ -1,0 +1,78 @@
+##################################################################################################
+# eventmesh-kafkaui
+##################################################################################################
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: eventmesh-kafkaui
+  labels:
+    app: eventmesh-kafkaui
+    service: eventmesh
+spec:
+  ports:
+    - port: 8080
+      name: tcp
+      appProtocol: http
+  selector:
+    app: eventmesh-kafkaui
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: eventmesh-kafkaui
+  labels:
+    account: eventmesh-kafkaui
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eventmesh-kafkaui
+  labels:
+    app: eventmesh-kafkaui
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: eventmesh-kafkaui
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: eventmesh-kafkaui
+        version: v1
+    spec:
+      serviceAccountName: eventmesh-kafkaui
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        fsGroup: 0
+      containers:
+        - name: eventmesh-kafkaui
+          image: provectuslabs/kafka-ui
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: 500m
+              memory: 500Mi
+            requests:
+              cpu: 250m
+              memory: 250Mi
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: eventmesh-kafkaui
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: eventmesh-kafkaui
+data:
+  DYNAMIC_CONFIG_ENABLED: "true"
+  # KAFKA_CLUSTERS_0_NAME: "local"
+  # KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "eventmesh-kafka:9092"
+  # KAFKA_CLUSTERS_0_READONLY: "false"
+  # KAFKA_CLUSTERS_0_KAFKACONNECT_0_NAME: "debezium"
+  # KAFKA_CLUSTERS_0_KAFKACONNECT_0_ADDRESS: "http://eventmesh-debezium:8083"

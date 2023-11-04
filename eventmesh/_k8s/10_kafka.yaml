@@ -1,0 +1,204 @@
+##################################################################################################
+# eventmesh-kafka
+##################################################################################################
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: eventmesh-kafka
+  labels:
+    app: eventmesh-kafka
+    service: eventmesh
+spec:
+  ports:
+    - port: 9092
+      name: tcp
+      appProtocol: tcp
+  selector:
+    app: eventmesh-kafka
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: eventmesh-kafka
+  labels:
+    account: eventmesh-kafka
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eventmesh-kafka
+  labels:
+    app: eventmesh-kafka
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: eventmesh-kafka
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: eventmesh-kafka
+        version: v1
+    spec:
+      serviceAccountName: eventmesh-kafka
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        fsGroup: 0
+      containers:
+        - name: eventmesh-kafka
+          image: bitnami/kafka:latest
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: 500m
+              memory: 500Mi
+            requests:
+              cpu: 250m
+              memory: 250Mi
+          ports:
+            - containerPort: 9092
+          envFrom:
+            - configMapRef:
+                name: eventmesh-kafka
+          volumeMounts:
+            - name: eventmesh-kafka-app
+              mountPath: bitnami/kafka
+      initContainers:
+        - name: wait-for-zookeeper
+          image: busybox:1.28
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - -c
+            - |
+              while ! nc -z eventmesh-zookeeper 2181; do
+                sleep 1
+              done
+      volumes:
+        - name: eventmesh-kafka-app
+          persistentVolumeClaim:
+            claimName: eventmesh-kafka-app
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: eventmesh-kafka
+data:
+  ALLOW_PLAINTEXT_LISTENER: "yes"
+  KAFKA_ENABLE_KRAFT: "no"
+  KAFKA_BROKER_ID: "1"
+  KAFKA_CFG_ZOOKEEPER_CONNECT: "eventmesh-zookeeper:2181"
+  KAFKA_CFG_LISTENERS: "PLAINTEXT://:9092"
+  KAFKA_CFG_ADVERTISED_LISTENERS: "PLAINTEXT://eventmesh-kafka:9092"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: eventmesh-kafka-app
+  labels:
+    app: eventmesh-kafka
+spec:
+  storageClassName: eventmesh-kafka-app
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+##################################################################################################
+# eventmesh-zookeeper
+##################################################################################################
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: eventmesh-zookeeper
+  labels:
+    app: eventmesh-zookeeper
+    service: eventmesh
+spec:
+  ports:
+    - port: 2181
+      name: tcp
+      appProtocol: tcp
+  selector:
+    app: eventmesh-zookeeper
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: eventmesh-zookeeper
+  labels:
+    account: eventmesh-zookeeper
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eventmesh-zookeeper
+  labels:
+    app: eventmesh-zookeeper
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: eventmesh-zookeeper
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: eventmesh-zookeeper
+        version: v1
+    spec:
+      serviceAccountName: eventmesh-zookeeper
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        fsGroup: 0
+      containers:
+        - name: eventmesh-zookeeper
+          image: bitnami/zookeeper:latest
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: 500m
+              memory: 500Mi
+            requests:
+              cpu: 250m
+              memory: 250Mi
+          ports:
+            - containerPort: 2181
+          envFrom:
+            - configMapRef:
+                name: eventmesh-zookeeper
+          volumeMounts:
+            - name: eventmesh-zookeeper-app
+              mountPath: bitnami/zookeeper
+      volumes:
+        - name: eventmesh-zookeeper-app
+          persistentVolumeClaim:
+            claimName: eventmesh-zookeeper-app
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: eventmesh-zookeeper
+data:
+  ALLOW_ANONYMOUS_LOGIN: "yes"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: eventmesh-zookeeper-app
+  labels:
+    app: eventmesh-zookeeper
+spec:
+  storageClassName: eventmesh-zookeeper-app
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

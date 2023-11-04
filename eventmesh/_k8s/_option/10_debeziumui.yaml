@@ -1,0 +1,73 @@
+##################################################################################################
+# eventmesh-debeziumui
+##################################################################################################
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: eventmesh-debeziumui
+  labels:
+    app: eventmesh-debeziumui
+    service: eventmesh
+spec:
+  ports:
+    - port: 8080
+      name: tcp
+      appProtocol: http
+  selector:
+    app: eventmesh-debeziumui
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: eventmesh-debeziumui
+  labels:
+    account: eventmesh-debeziumui
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eventmesh-debeziumui
+  labels:
+    app: eventmesh-debeziumui
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: eventmesh-debeziumui
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: eventmesh-debeziumui
+        version: v1
+    spec:
+      serviceAccountName: eventmesh-debeziumui
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        fsGroup: 0
+      containers:
+        - name: eventmesh-debeziumui
+          image: debezium/debezium-ui:latest
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: 200m
+              memory: 200Mi
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: eventmesh-debeziumui
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: eventmesh-debeziumui
+data:
+  KAFKA_CONNECT_URIS: "http://eventmesh-debezium:8083"

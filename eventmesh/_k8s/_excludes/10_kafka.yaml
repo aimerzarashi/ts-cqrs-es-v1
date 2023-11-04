@@ -1,0 +1,99 @@
+##################################################################################################
+# eventmesh-kafka
+##################################################################################################
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: eventmesh-kafka
+  labels:
+    app: eventmesh-kafka
+    service: eventmesh
+spec:
+  ports:
+    - port: 9092
+      name: tcp
+      appProtocol: tcp
+  selector:
+    app: eventmesh-kafka
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: eventmesh-kafka
+  labels:
+    account: eventmesh-kafka
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eventmesh-kafka
+  labels:
+    app: eventmesh-kafka
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: eventmesh-kafka
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: eventmesh-kafka
+        version: v1
+    spec:
+      serviceAccountName: eventmesh-kafka
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        fsGroup: 0
+      containers:
+        - name: eventmesh-kafka
+          image: bitnami/kafka:latest
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 1000Mi
+            requests:
+              cpu: 500m
+              memory: 500Mi
+          ports:
+            - containerPort: 9092
+          envFrom:
+            - configMapRef:
+                name: eventmesh-kafka
+          volumeMounts:
+            - name: eventmesh-kafka-app
+              mountPath: bitnami/eventmesh-kafka
+      volumes:
+        - name: eventmesh-kafka-app
+          persistentVolumeClaim:
+            claimName: eventmesh-kafka-app
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: eventmesh-kafka
+data:
+  KAFKA_CFG_NODE_ID: "0"
+  KAFKA_CFG_PROCESS_ROLES: "controller,broker"
+  KAFKA_CFG_LISTENERS: "PLAINTEXT://:9092,CONTROLLER://:9093"
+  KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT"
+  KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: "0@eventmesh-kafka:9093"
+  KAFKA_CFG_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: eventmesh-kafka-app
+  labels:
+    app: eventmesh-kafka
+spec:
+  storageClassName: eventmesh-kafka-app
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

@@ -1,0 +1,90 @@
+##################################################################################################
+# eventmesh-debezium
+##################################################################################################
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: eventmesh-debezium
+  labels:
+    app: eventmesh-debezium
+    service: eventmesh
+spec:
+  ports:
+    - port: 8083
+      name: tcp
+      appProtocol: tcp
+  selector:
+    app: eventmesh-debezium
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: eventmesh-debezium
+  labels:
+    account: eventmesh-debezium
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eventmesh-debezium
+  labels:
+    app: eventmesh-debezium
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: eventmesh-debezium
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: eventmesh-debezium
+        version: v1
+    spec:
+      serviceAccountName: eventmesh-debezium
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        fsGroup: 0
+      containers:
+        - name: eventmesh-debezium
+          image: debezium/connect:nightly
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 1000Mi
+            requests:
+              cpu: 500m
+              memory: 500Mi
+          ports:
+            - containerPort: 8083
+          envFrom:
+            - configMapRef:
+                name: eventmesh-debezium
+          tty: true
+      initContainers:
+        - name: wait-for-kafka
+          image: busybox:1.28
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - -c
+            - |
+              while ! nc -z eventmesh-kafka 9092; do
+                sleep 1
+              done
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: eventmesh-debezium
+data:
+  BOOTSTRAP_SERVERS: "eventmesh-kafka:9092"
+  GROUP_ID: "1"
+  CONFIG_STORAGE_TOPIC: "my_connect_configs"
+  OFFSET_STORAGE_TOPIC: "my_connect_offsets"
+  STATUS_STORAGE_TOPIC: "my_connect_statuses"
+  ENABLE_DEBEZIUM_SCRIPTING: "true"
