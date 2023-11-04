@@ -17,3 +17,11 @@ model stockItemEvent {
   eventType     String
   eventPayload  Json?
 }
+
+model inboundPlanEvent {
+  id            String    @id @default(cuid())
+  createdAt     DateTime  @default(now())
+  aggregateId   String
+  eventType     String
+  eventPayload  Json?
+}
