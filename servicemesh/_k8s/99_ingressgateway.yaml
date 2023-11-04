@@ -18,11 +18,6 @@ spec:
         httpsRedirect: true
       hosts:
         - "*"
-      # - website-ui.aimerzarashi.com
-      # - website-smtp.aimerzarashi.com
-      # - iam-provider.aimerzarashi.com
-      # - command-api.aimerzarashi.com
-      # - database-pgadmin.aimerzarashi.com
     - port:
         number: 443
         name: public-https
@@ -32,8 +27,3 @@ spec:
         credentialName: tls-credential-aimerzarashi.com
       hosts:
         - "*"
-      # - website-ui.aimerzarashi.com
-      # - website-smtp.aimerzarashi.com
-      # - iam-provider.aimerzarashi.com
-      # - command-api.aimerzarashi.com
-      # - database-pgadmin.aimerzarashi.com
