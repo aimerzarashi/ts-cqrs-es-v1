@@ -5,6 +5,34 @@
 
 
 export interface paths {
+  "/stock/items": {
+    /** Register stock items */
+    post: {
+      requestBody: {
+        content: {
+          "application/json": components["schemas"]["StockItem"];
+        };
+      };
+      responses: {
+        /** @description Successful Created */
+        201: {
+          content: never;
+        };
+        /** @description Bad request */
+        400: {
+          content: never;
+        };
+        /** @description Unauthorized */
+        401: {
+          content: never;
+        };
+        /** @description Internal Server Error */
+        500: {
+          content: never;
+        };
+      };
+    };
+  };
   "/inbound/plans": {
     /** Register for inbound plans */
     post: {
@@ -18,35 +46,15 @@ export interface paths {
         201: {
           content: never;
         };
-        /** @description Invalid request */
+        /** @description Bad request */
         400: {
           content: never;
         };
-        /** @description Server error */
-        500: {
+        /** @description Unauthorized */
+        401: {
           content: never;
         };
-      };
-    };
-  };
-  "/stock/items": {
-    /** Register stock items */
-    post: {
-      requestBody: {
-        content: {
-          "application/json": components["schemas"]["StockItem"];
-        };
-      };
-      responses: {
-        /** @description Successful Successful Created */
-        201: {
-          content: never;
-        };
-        /** @description Invalid request */
-        400: {
-          content: never;
-        };
-        /** @description Server error */
+        /** @description Internal Server Error */
         500: {
           content: never;
         };
@@ -61,13 +69,13 @@ export interface components {
   schemas: {
     InboundPlan: {
       /** Format: date */
-      arrivalDate?: string;
-      itemId?: string;
-      quantity?: number;
-      unit?: string;
+      arrivalDate: string;
+      itemId: string;
+      quantity: number;
+      unit: string;
     };
     StockItem: {
-      name?: string;
+      name: string;
     };
   };
   responses: never;
