@@ -70,9 +70,9 @@ kind: ConfigMap
 metadata:
   name: eventmesh-kafkaui
 data:
-  DYNAMIC_CONFIG_ENABLED: "true"
-  # KAFKA_CLUSTERS_0_NAME: "local"
-  # KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "eventmesh-kafka:9092"
-  # KAFKA_CLUSTERS_0_READONLY: "false"
-  # KAFKA_CLUSTERS_0_KAFKACONNECT_0_NAME: "debezium"
-  # KAFKA_CLUSTERS_0_KAFKACONNECT_0_ADDRESS: "http://eventmesh-debezium:8083"
+  #  DYNAMIC_CONFIG_ENABLED: "true"
+  KAFKA_CLUSTERS_0_NAME: "local"
+  KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "eventmesh-kafka:9092"
+  KAFKA_CLUSTERS_0_READONLY: "false"
+  KAFKA_CLUSTERS_0_KAFKACONNECT_0_NAME: "debezium"
+  KAFKA_CLUSTERS_0_KAFKACONNECT_0_ADDRESS: "http://eventmesh-debezium:8083"
