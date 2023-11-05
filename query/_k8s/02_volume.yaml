@@ -1,0 +1,18 @@
+##################################################################################################
+# query-subscription
+##################################################################################################
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: query-subscription-app
+  labels:
+    type: local
+spec:
+  storageClassName: query-subscription-app
+  capacity:
+    storage: 500Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/var/lib/myprojects/ts-cqrs-es-v1/query/subscription"

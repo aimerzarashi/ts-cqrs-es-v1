@@ -1,0 +1,93 @@
+##################################################################################################
+# query-subscription
+##################################################################################################
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: query-subscription
+  labels:
+    app: query-subscription
+    service: query
+spec:
+  ports:
+    - port: 3000
+      name: tcp
+      appProtocol: http
+  selector:
+    app: query-subscription
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: query-subscription
+  labels:
+    account: query-subscription
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: query-subscription
+  labels:
+    app: query-subscription
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: query-subscription
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: query-subscription
+        version: v1
+    spec:
+      serviceAccountName: query-subscription
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        fsGroup: 0
+      containers:
+        - name: query-subscription
+          image: node:latest
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: 500m
+              memory: 500Mi
+            requests:
+              cpu: 250m
+              memory: 250Mi
+          tty: true
+          ports:
+            - containerPort: 3000
+          workingDir: /my-app
+          # command:
+          #   - "sh"
+          #   - "-c"
+          #   - |
+          #     npm install;
+          #     (npm run prisma migrate dev; echo);
+          #     npm run dev;
+          volumeMounts:
+            - name: query-subscription-app
+              mountPath: /my-app
+      volumes:
+        - name: query-subscription-app
+          persistentVolumeClaim:
+            claimName: query-subscription-app
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: query-subscription-app
+  labels:
+    app: query-subscription
+spec:
+  storageClassName: query-subscription-app
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500Mi

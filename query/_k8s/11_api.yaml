@@ -1,0 +1,94 @@
+##################################################################################################
+# query-api
+##################################################################################################
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: query-api
+  labels:
+    app: query-api
+    service: query
+spec:
+  ports:
+    - port: 5000
+      name: tcp
+      appProtocol: http
+  selector:
+    app: query-api
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: query-api
+  labels:
+    account: query-api
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: query-api
+  labels:
+    app: query-api
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: query-api
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: query-api
+        version: v1
+    spec:
+      serviceAccountName: query-api
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        fsGroup: 0
+      containers:
+        - name: query-api
+          #          image: graphile/postgraphile:latest
+          image: my_postgraphile
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: 500m
+              memory: 500Mi
+            requests:
+              cpu: 250m
+              memory: 250Mi
+          tty: true
+          ports:
+            - containerPort: 5000
+          envFrom:
+            - secretRef:
+                name: database-resource
+          args:
+            [
+              "--subscriptions",
+              "--watch",
+              "--dynamic-json",
+              "--no-setof-functions-contain-nulls",
+              "--no-ignore-rbac",
+              "--show-error-stack=json",
+              "--extended-errors",
+              "hint,detail,errcode",
+              "--append-plugins",
+              "@graphile-contrib/pg-simplify-inflector",
+              "--export-schema-graphql",
+              "schema.graphql",
+              "--enhance-graphiql",
+              "--allow-explain",
+              "--enable-query-batching",
+              "--legacy-relations",
+              "omit",
+              "--connection",
+              "postgres://$(POSTGRESQL_USERNAME):$(POSTGRESQL_PASSWORD)@database-resource:5432/shop",
+              "--owner-connection",
+              "postgres://postgres:$(POSTGRESQL_POSTGRES_PASSWORD)@database-resource:5432/shop",
+              "--schema",
+              "public",
+            ]
