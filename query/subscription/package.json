@@ -1,0 +1,25 @@
+{
+  "name": "my-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "prisma": "npx dotenv -e .env.local -- npx prisma",
+    "test": "find ./lib -name '*.test.ts' -exec node --loader tsx --test {} \\;",
+    "dev": "npx dotenv -e .env.local -- node --import tsx ./routers/shop/stockItem.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.8.10",
+    "dotenv-cli": "^7.3.0",
+    "prisma": "^5.5.2",
+    "tsx": "^3.14.0",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.5.2",
+    "kafkajs": "^2.2.4"
+  }
+}
