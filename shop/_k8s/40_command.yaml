@@ -1,91 +1,91 @@
 ##################################################################################################
-# query-subscription
+# shop-command
 ##################################################################################################
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: query-subscription
+  name: shop-command
   labels:
-    app: query-subscription
-    service: query
+    app: shop-command
+    service: shop
 spec:
   ports:
     - port: 3000
       name: tcp
       appProtocol: http
   selector:
-    app: query-subscription
+    app: shop-command
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: query-subscription
+  name: shop-command
   labels:
-    account: query-subscription
+    account: shop-command
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: query-subscription
+  name: shop-command
   labels:
-    app: query-subscription
+    app: shop-command
     version: v1
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: query-subscription
+      app: shop-command
       version: v1
   template:
     metadata:
       labels:
-        app: query-subscription
+        app: shop-command
         version: v1
     spec:
-      serviceAccountName: query-subscription
+      serviceAccountName: shop-command
       securityContext:
         runAsUser: 0
         runAsGroup: 0
         fsGroup: 0
       containers:
-        - name: query-subscription
+        - name: shop-command
           image: node:latest
           imagePullPolicy: IfNotPresent
           resources:
             limits:
+              cpu: 1000m
+              memory: 1000Mi
+            requests:
               cpu: 500m
               memory: 500Mi
-            requests:
-              cpu: 250m
-              memory: 250Mi
           tty: true
           ports:
             - containerPort: 3000
           workingDir: /my-app
-          # command:
-          #   - "sh"
-          #   - "-c"
-          #   - |
-          #     npm install;
-          #     (npm run prisma migrate dev; echo);
-          #     npm run dev;
+          command:
+            - "sh"
+            - "-c"
+            - |
+              npm install;
+              (npm run prisma migrate dev; echo);
+              npm run dev;
           volumeMounts:
-            - name: query-subscription-app
+            - name: shop-command-app
               mountPath: /my-app
       volumes:
-        - name: query-subscription-app
+        - name: shop-command-app
           persistentVolumeClaim:
-            claimName: query-subscription-app
+            claimName: shop-command-app
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: query-subscription-app
+  name: shop-command-app
   labels:
-    app: query-subscription
+    app: shop-command
 spec:
-  storageClassName: query-subscription-app
+  storageClassName: shop-command-app
   accessModes:
     - ReadWriteOnce
   resources:

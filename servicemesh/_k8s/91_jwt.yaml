@@ -5,7 +5,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: command-api
+      app: shop-command
   jwtRules:
     - issuer: https://iam-provider.aimerzarashi.com/realms/aimerzarashi
       jwksUri: http://iam-provider.services:8080/realms/aimerzarashi/protocol/openid-connect/certs
@@ -17,11 +17,11 @@ spec:
 apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
 metadata:
-  name: command-api
+  name: shop-command
 spec:
   selector:
     matchLabels:
-      app: command-api
+      app: shop-command
   action: ALLOW
   rules:
     - when:

@@ -1,0 +1,54 @@
+##################################################################################################
+# shop-ui
+##################################################################################################
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: shop-ui-app
+  labels:
+    type: local
+spec:
+  storageClassName: shop-ui-app
+  capacity:
+    storage: 500Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/var/lib/myprojects/ts-cqrs-es-v1/shop/ui"
+##################################################################################################
+# shop-command
+##################################################################################################
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: shop-command-app
+  labels:
+    type: local
+spec:
+  storageClassName: shop-command-app
+  capacity:
+    storage: 500Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/var/lib/myprojects/ts-cqrs-es-v1/shop/command"
+##################################################################################################
+# shop-subscription
+##################################################################################################
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: shop-subscription-app
+  labels:
+    type: local
+spec:
+  storageClassName: shop-subscription-app
+  capacity:
+    storage: 500Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/var/lib/myprojects/ts-cqrs-es-v1/shop/subscription"

@@ -1,55 +1,55 @@
 ##################################################################################################
-# website-ui
+# shop-ui
 ##################################################################################################
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: website-ui
+  name: shop-ui
   labels:
-    app: website-ui
-    service: website
+    app: shop-ui
+    service: shop
 spec:
   ports:
     - port: 3000
       name: tcp
       appProtocol: http
   selector:
-    app: website-ui
+    app: shop-ui
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: website-ui
+  name: shop-ui
   labels:
-    account: website-ui
+    account: shop-ui
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: website-ui
+  name: shop-ui
   labels:
-    app: website-ui
+    app: shop-ui
     version: v1
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: website-ui
+      app: shop-ui
       version: v1
   template:
     metadata:
       labels:
-        app: website-ui
+        app: shop-ui
         version: v1
     spec:
-      serviceAccountName: website-ui
+      serviceAccountName: shop-ui
       securityContext:
         runAsUser: 0
         runAsGroup: 0
         fsGroup: 0
       containers:
-        - name: website-ui
+        - name: shop-ui
           image: node:latest
           imagePullPolicy: IfNotPresent
           resources:
@@ -71,7 +71,7 @@ spec:
               (npm run prisma migrate dev; echo);
               npm run dev;
           volumeMounts:
-            - name: website-ui-app
+            - name: shop-ui-app
               mountPath: /my-app
       initContainers:
         - name: wait
@@ -88,7 +88,7 @@ spec:
               done
           envFrom:
             - configMapRef:
-                name: website-ui
+                name: shop-ui
         - name: init-authjs
           image: curlimages/curl:latest
           imagePullPolicy: IfNotPresent
@@ -118,11 +118,11 @@ spec:
                   key: POSTGRESQL_PASSWORD
           envFrom:
             - secretRef:
-                name: website-ui
+                name: shop-ui
             - configMapRef:
-                name: website-ui
+                name: shop-ui
           volumeMounts:
-            - name: website-ui-app
+            - name: shop-ui-app
               mountPath: /my-app
         - name: init-iam
           image: curlimages/curl:latest
@@ -187,9 +187,9 @@ spec:
                   key: KEYCLOAK_ADMIN_PASSWORD
           envFrom:
             - configMapRef:
-                name: website-ui
+                name: shop-ui
           volumeMounts:
-            - name: website-ui-app
+            - name: shop-ui-app
               mountPath: /my-app
         - name: finish
           image: curlimages/curl:latest
@@ -201,37 +201,37 @@ spec:
             - |
               mv .env.work .env.local
           volumeMounts:
-            - name: website-ui-app
+            - name: shop-ui-app
               mountPath: /my-app
       volumes:
-        - name: website-ui-app
+        - name: shop-ui-app
           persistentVolumeClaim:
-            claimName: website-ui-app
+            claimName: shop-ui-app
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: website-ui
+  name: shop-ui
 data:
-  NEXTAUTH_URL: "https://website-ui.aimerzarashi.com"
+  NEXTAUTH_URL: "https://shop-ui.aimerzarashi.com"
   AUTH_DB_HOST: "database-resource"
   AUTH_DB_PORT: "5432"
   AUTH_DB_NAME: "authjs"
-  SMTP_HOST: "website-smtp"
+  SMTP_HOST: "shop-smtp"
   SMTP_PORT: "1025"
   EMAIL_FROM: "authenticator@aimerzarashi.com"
   IAM_URL: "http://iam-provider:8080"
   IAM_REALM: "aimerzarashi"
-  IAM_CLIENT_ID: "website-ui"
+  IAM_CLIENT_ID: "shop"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: website-ui-app
+  name: shop-ui-app
   labels:
-    app: website-ui
+    app: shop-ui
 spec:
-  storageClassName: website-ui-app
+  storageClassName: shop-ui-app
   accessModes:
     - ReadWriteOnce
   resources:

@@ -1,14 +1,14 @@
 ##################################################################################################
-# website-smtp
+# shop-smtp
 ##################################################################################################
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: website-smtp
+  name: shop-smtp
   labels:
-    app: website-smtp
-    service: website
+    app: shop-smtp
+    service: shop
 spec:
   ports:
     - port: 8025
@@ -18,41 +18,41 @@ spec:
       name: internal
       appProtocol: tcp
   selector:
-    app: website-smtp
+    app: shop-smtp
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: website-smtp
+  name: shop-smtp
   labels:
-    account: website-smtp
+    account: shop-smtp
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: website-smtp
+  name: shop-smtp
   labels:
-    app: website-smtp
+    app: shop-smtp
     version: v1
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: website-smtp
+      app: shop-smtp
       version: v1
   template:
     metadata:
       labels:
-        app: website-smtp
+        app: shop-smtp
         version: v1
     spec:
-      serviceAccountName: website-smtp
+      serviceAccountName: shop-smtp
       securityContext:
         runAsUser: 0
         runAsGroup: 0
         fsGroup: 0
       containers:
-        - name: website-smtp
+        - name: shop-smtp
           image: mailhog/mailhog:latest
           imagePullPolicy: IfNotPresent
           resources:

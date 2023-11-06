@@ -55,9 +55,9 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
-  name: website-ui
+  name: shop-ui
 spec:
-  host: website-ui
+  host: shop-ui
   trafficPolicy:
     tls:
       mode: ISTIO_MUTUAL
@@ -69,9 +69,53 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
-  name: website-smtp
+  name: shop-smtp
 spec:
-  host: website-smtp
+  host: shop-smtp
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
+  subsets:
+    - name: v1
+      labels:
+        version: v1
+
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: shop-command
+spec:
+  host: shop-command
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
+  subsets:
+    - name: v1
+      labels:
+        version: v1
+
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: shop-subscription
+spec:
+  host: shop-subscription
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
+  subsets:
+    - name: v1
+      labels:
+        version: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: shop-query
+spec:
+  host: shop-query
   trafficPolicy:
     tls:
       mode: ISTIO_MUTUAL
@@ -86,20 +130,6 @@ metadata:
   name: iam-provider
 spec:
   host: iam-provider
-  trafficPolicy:
-    tls:
-      mode: ISTIO_MUTUAL
-  subsets:
-    - name: v1
-      labels:
-        version: v1
----
-apiVersion: networking.istio.io/v1alpha3
-kind: DestinationRule
-metadata:
-  name: command-api
-spec:
-  host: command-api
   trafficPolicy:
     tls:
       mode: ISTIO_MUTUAL

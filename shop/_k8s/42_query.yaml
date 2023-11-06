@@ -1,55 +1,55 @@
 ##################################################################################################
-# query-api
+# shop-query
 ##################################################################################################
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: query-api
+  name: shop-query
   labels:
-    app: query-api
-    service: query
+    app: shop-query
+    service: shop
 spec:
   ports:
     - port: 5000
       name: tcp
       appProtocol: http
   selector:
-    app: query-api
+    app: shop-query
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: query-api
+  name: shop-query
   labels:
-    account: query-api
+    account: shop-query
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: query-api
+  name: shop-query
   labels:
-    app: query-api
+    app: shop-query
     version: v1
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: query-api
+      app: shop-query
       version: v1
   template:
     metadata:
       labels:
-        app: query-api
+        app: shop-query
         version: v1
     spec:
-      serviceAccountName: query-api
+      serviceAccountName: shop-query
       securityContext:
         runAsUser: 0
         runAsGroup: 0
         fsGroup: 0
       containers:
-        - name: query-api
+        - name: shop-query
           #          image: graphile/postgraphile:latest
           image: my_postgraphile
           imagePullPolicy: IfNotPresent

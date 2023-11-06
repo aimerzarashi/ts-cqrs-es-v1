@@ -1,0 +1,76 @@
+##################################################################################################
+# shop-ui
+##################################################################################################
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: shop-ui
+spec:
+  hosts:
+    - shop-ui.aimerzarashi.com
+  gateways:
+    - services
+  http:
+    - route:
+        - destination:
+            host: shop-ui.services.svc.cluster.local
+            port:
+              number: 3000
+##################################################################################################
+# shop-smtp
+##################################################################################################
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: shop-smtp
+spec:
+  hosts:
+    - shop-smtp.aimerzarashi.com
+  gateways:
+    - services
+  http:
+    - route:
+        - destination:
+            host: shop-smtp.services.svc.cluster.local
+            port:
+              number: 8025
+##################################################################################################
+# shop-command
+##################################################################################################
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: shop-command
+spec:
+  hosts:
+    - shop-command.aimerzarashi.com
+  gateways:
+    - services
+  http:
+    - route:
+        - destination:
+            host: shop-command.services.svc.cluster.local
+            port:
+              number: 3000
+##################################################################################################
+# shop-query
+##################################################################################################
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: shop-query
+spec:
+  hosts:
+    - shop-query.aimerzarashi.com
+  gateways:
+    - services
+  http:
+    - route:
+        - destination:
+            host: shop-query.services.svc.cluster.local
+            port:
+              number: 5000
