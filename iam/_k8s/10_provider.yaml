@@ -83,7 +83,8 @@ spec:
             - -c
             - |
               while ! nc -z database-resource 5432; do
-                sleep 1
+                sleep 5
+                echo "Waiting..."
               done
         - name: initdb
           image: node:latest

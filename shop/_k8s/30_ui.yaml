@@ -74,22 +74,18 @@ spec:
             - name: shop-ui-app
               mountPath: /my-app
       initContainers:
-        - name: wait
-          image: curlimages/curl:latest
+        - name: init-env
+          image: busybox:1.28
           imagePullPolicy: IfNotPresent
           command:
             - sh
             - -c
             - |
-              base_url=$(IAM_URL)
-              echo "Waiting for the API to become available..."
-              until curl -sSf -o /dev/null -w "%{http_code}" "$base_url/realms/master/protocol/openid-connect/certs" -ne 200; do
-                sleep 1
-              done
-          envFrom:
-            - configMapRef:
-                name: shop-ui
-        - name: init-authjs
+              echo "" > .env.work
+          volumeMounts:
+            - name: shop-ui-app
+              mountPath: /my-app
+        - name: set-env-authjs
           image: curlimages/curl:latest
           imagePullPolicy: IfNotPresent
           workingDir: /my-app
@@ -124,7 +120,7 @@ spec:
           volumeMounts:
             - name: shop-ui-app
               mountPath: /my-app
-        - name: init-iam
+        - name: set-env-iam
           image: curlimages/curl:latest
           imagePullPolicy: IfNotPresent
           workingDir: /my-app
@@ -140,6 +136,12 @@ spec:
               base_url=$(IAM_URL)
               realm=$(IAM_REALM)
               client_id=$(IAM_CLIENT_ID)
+
+              echo "Waiting for the API to become available..."
+              until curl -sSf -o /dev/null -w "%{http_code}" "$base_url/realms/master/protocol/openid-connect/certs" -ne 200; do
+                sleep 5
+                echo "Waiting..."
+              done
 
               response=$(curl -X POST \
               -d "grant_type=password" \

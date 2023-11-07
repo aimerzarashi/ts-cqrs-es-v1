@@ -76,7 +76,8 @@ spec:
             - -c
             - |
               while ! nc -z eventmesh-zookeeper 2181; do
-                sleep 1
+                sleep 5
+                echo "Waiting..."
               done
       volumes:
         - name: eventmesh-kafka-app

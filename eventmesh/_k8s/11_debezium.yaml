@@ -74,7 +74,8 @@ spec:
             - -c
             - |
               while ! nc -z eventmesh-kafka 9092; do
-                sleep 1
+                sleep 5
+                echo "Waiting..."
               done
 ---
 apiVersion: v1

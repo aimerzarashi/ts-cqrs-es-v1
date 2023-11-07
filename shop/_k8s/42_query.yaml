@@ -92,3 +92,15 @@ spec:
               "--schema",
               "public",
             ]
+      initContainers:
+        - name: wait-db
+          image: busybox:1.28
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - -c
+            - |
+              while ! nc -z database-resource 5432; do
+                echo "Waiting..."
+                sleep 5
+              done

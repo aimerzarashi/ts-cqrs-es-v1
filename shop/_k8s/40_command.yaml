@@ -54,11 +54,11 @@ spec:
           imagePullPolicy: IfNotPresent
           resources:
             limits:
-              cpu: 1000m
-              memory: 1000Mi
-            requests:
               cpu: 500m
               memory: 500Mi
+            requests:
+              cpu: 250m
+              memory: 250Mi
           tty: true
           ports:
             - containerPort: 3000
@@ -73,10 +73,80 @@ spec:
           volumeMounts:
             - name: shop-command-app
               mountPath: /my-app
+      initContainers:
+        - name: init-env
+          image: busybox:1.28
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - -c
+            - |
+              echo "" > .env.work
+          volumeMounts:
+            - name: shop-command-app
+              mountPath: /my-app
+        - name: init-env-db
+          image: busybox:1.28
+          imagePullPolicy: IfNotPresent
+          workingDir: /my-app
+          command:
+            - sh
+            - -c
+            - |
+              echo 'DATABASE_URL="postgres://$(DB_USERNAME):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)"' >> .env.work
+          env:
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: database-resource
+                  key: POSTGRESQL_USERNAME
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: database-resource
+                  key: POSTGRESQL_PASSWORD
+          envFrom:
+            - configMapRef:
+                name: shop-command
+          volumeMounts:
+            - name: shop-command-app
+              mountPath: /my-app
+        - name: wait-db
+          image: busybox:1.28
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - -c
+            - |
+              while ! nc -z database-event 5432; do
+                echo "Waiting..."
+                sleep 5
+              done
+        - name: finish
+          image: curlimages/curl:latest
+          imagePullPolicy: IfNotPresent
+          workingDir: /my-app
+          command:
+            - sh
+            - -c
+            - |
+              mv .env.work .env.local
+          volumeMounts:
+            - name: shop-command-app
+              mountPath: /my-app
       volumes:
         - name: shop-command-app
           persistentVolumeClaim:
             claimName: shop-command-app
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shop-command
+data:
+  DB_HOST: "database-event"
+  DB_PORT: "5432"
+  DB_NAME: "shop"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
