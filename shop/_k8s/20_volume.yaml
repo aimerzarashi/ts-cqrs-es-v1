@@ -11,7 +11,7 @@ metadata:
 spec:
   storageClassName: shop-ui-app
   capacity:
-    storage: 500Mi
+    storage: 100Mi
   accessModes:
     - ReadWriteOnce
   hostPath:
@@ -29,7 +29,7 @@ metadata:
 spec:
   storageClassName: shop-command-app
   capacity:
-    storage: 500Mi
+    storage: 100Mi
   accessModes:
     - ReadWriteOnce
   hostPath:
@@ -47,7 +47,7 @@ metadata:
 spec:
   storageClassName: shop-subscription-app
   capacity:
-    storage: 500Mi
+    storage: 100Mi
   accessModes:
     - ReadWriteOnce
   hostPath:
