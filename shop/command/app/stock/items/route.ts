@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { headers } from 'next/headers';
 import { extractAccountId } from '@/lib/auth/validation';
 import { paths } from '@/types/openapi';
-import { validation } from './validation';
+import { validation } from '@/app/stock/items/validation';
 import { PrismaClient } from '@prisma/client';
 
 type RequestBody = paths['/stock/items']['post']['requestBody']['content']['application/json'];
