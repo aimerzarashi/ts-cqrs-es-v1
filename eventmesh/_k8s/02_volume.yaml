@@ -11,7 +11,7 @@ metadata:
 spec:
   storageClassName: eventmesh-kafka-app
   capacity:
-    storage: 1Gi
+    storage: 100Mi
   accessModes:
     - ReadWriteOnce
   hostPath:
@@ -29,7 +29,7 @@ metadata:
 spec:
   storageClassName: eventmesh-zookeeper-app
   capacity:
-    storage: 1Gi
+    storage: 100Mi
   accessModes:
     - ReadWriteOnce
   hostPath:
