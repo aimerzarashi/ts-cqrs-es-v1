@@ -131,51 +131,46 @@ spec:
               apk update
               apk add jq
 
+              base_url=$(IAM_URL)
               admin_username=$(IAM_ADMIN_USERNAME)
               admin_password=$(IAM_ADMIN_PASSWORD)
-              base_url=$(IAM_URL)
               realm=$(IAM_REALM)
-              client_id=$(IAM_CLIENT_ID)
+              client_clientid=$(IAM_CLIENT_CLIENTID)
 
-              echo "Waiting for the API to become available..."
-              until curl -sSf -o /dev/null -w "%{http_code}" "$base_url/realms/master/protocol/openid-connect/certs" -ne 200; do
-                sleep 5
-                echo "Waiting..."
-              done
+              until [ $(curl -s -o /dev/null -w '%{http_code}' \
+              "$base_url/realms/$realm/protocol/openid-connect/certs") -eq 200 ]; \
+              do \
+                echo "waiting..."; \
+                sleep 5; \
+              done; \
 
-              response=$(curl -X POST \
+              token=$(curl -X POST \
               -d "grant_type=password" \
               -d "client_id=admin-cli" \
               -d "username=$admin_username" \
               -d "password=$admin_password" \
               "$base_url/realms/master/protocol/openid-connect/token")
 
-              access_token=$(echo $response | jq -r '.access_token')
+              access_token=$(echo $token | jq -r '.access_token')
 
-              response=$(curl \
-              -H "Authorization: Bearer $access_token" \
-              "$base_url/admin/realms/$realm/clients")
-              echo $response
-
-              id=$(echo $response | jq -r '.[] | select(.clientId == "'"$client_id"'") | .id')
-
-              curl -s -X POST \
-              -H "Authorization: Bearer $access_token" \
-              -H "Content-Type: application/json" \
-              $base_url/admin/realms/$realm/clients/$id/client-secret -d '{}'
-
-              response=$(curl \
+              clients=$(curl \
               -H "Authorization: Bearer $access_token" \
               "$base_url/admin/realms/$realm/clients")
 
-              secret=$(echo $response | jq -r '.[] | select(.clientId == "'"$client_id"'") | .secret')
+              client_id=$(echo $clients | jq -r '.[] | select(.clientId == "'"$client_clientid"'") | .id')
+
+              client_secret=$(curl -X POST \
+              -H "Authorization: Bearer $access_token" \
+              "$base_url/admin/realms/$realm/clients/$client_id/client-secret")
+
+              client_secret_value=$(echo $client_secret | jq -r '.value')
 
               echo "IAM_URL=$base_url" >> .env.work
               echo "IAM_ADMIN_USERNAME=$admin_username" >> .env.work
               echo "IAM_ADMIN_PASSWORD=$admin_password" >> .env.work
               echo "IAM_REALM=$realm" >> .env.work
-              echo "IAM_CLIENT_ID=$client_id" >> .env.work
-              echo "IAM_CLIENT_SECRET=$secret" >> .env.work
+              echo "IAM_CLIENT_CLIENTID=$client_clientid" >> .env.work
+              echo "IAM_CLIENT_SECRET=$client_secret_value" >> .env.work
           env:
             - name: IAM_ADMIN_USERNAME
               valueFrom:
@@ -224,7 +219,7 @@ data:
   EMAIL_FROM: "authenticator@aimerzarashi.com"
   IAM_URL: "http://iam-provider:8080"
   IAM_REALM: "aimerzarashi"
-  IAM_CLIENT_ID: "shop"
+  IAM_CLIENT_CLIENTID: "shop"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -238,4 +233,4 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 500Mi
+      storage: 100Mi
