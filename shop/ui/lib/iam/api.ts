@@ -6,7 +6,7 @@ const iamDomain = process.env.IAM_URL;
 const iamAdminUsername = process.env.IAM_ADMIN_USERNAME;
 const iamAdminPassword = process.env.IAM_ADMIN_PASSWORD;
 const iamRealm = process.env.IAM_REALM;
-const iamClientId = process.env.IAM_CLIENT_ID;
+const iamClientId = process.env.IAM_CLIENT_CLIENTID;
 const iamClientSecret = process.env.IAM_CLIENT_SECRET;
 
 type UserToken = {
