@@ -13,8 +13,9 @@ export async function POST(request: NextRequest) {
 
   const accountId = extractAccountId(authorization);
   if (accountId.kind == 'error') {
+    console.error(accountId.error);
     return NextResponse.json(
-      { error: accountId.error.message },
+      { message: 'failed' },
       { status: 401 }
     );
   }
@@ -22,8 +23,9 @@ export async function POST(request: NextRequest) {
   const requestbody: RequestBody = await request.json();
   const validStockItem = validation(requestbody);
   if (validStockItem.kind == 'error') {
+    console.error(validStockItem.error);
     return NextResponse.json(
-      { error: validStockItem.error.message },
+      { message: 'failed' },
       { status: 400 }
     );
   }
@@ -39,6 +41,13 @@ export async function POST(request: NextRequest) {
       }),
     }
   });
+  if (!stockItemEvent) {
+    console.error(new Error('failed to create stock item event'));
+    return NextResponse.json(
+      { message: 'failed' },
+      { status: 500 }
+    );
+  }
 
   return NextResponse.json({ message: 'success' }, { status: 201 });
 }
