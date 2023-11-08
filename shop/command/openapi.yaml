@@ -25,9 +25,16 @@ paths:
           description: Unauthorized
         "500":
           description: Internal Server Error
-  /inbound/plans:
-    post:
-      summary: Register for inbound plans
+  /stock/items/{id}:
+    put:
+      summary: Update a stock item
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
       security:
         - BearerAuth: []
       requestBody:
@@ -35,10 +42,10 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/InboundPlan"
+              $ref: "#/components/schemas/StockItem"
       responses:
-        "201":
-          description: Successful Created
+        "200":
+          description: Successful Updated
         "400":
           description: Bad request
         "401":
@@ -52,23 +59,6 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
-    InboundPlan:
-      type: object
-      properties:
-        arrivalDate:
-          type: string
-          format: date
-        itemId:
-          type: string
-        quantity:
-          type: number
-        unit:
-          type: string
-      required:
-        - arrivalDate
-        - itemId
-        - quantity
-        - unit
     StockItem:
       type: object
       properties:

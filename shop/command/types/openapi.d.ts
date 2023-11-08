@@ -33,17 +33,22 @@ export interface paths {
       };
     };
   };
-  "/inbound/plans": {
-    /** Register for inbound plans */
-    post: {
+  "/stock/items/{id}": {
+    /** Update a stock item */
+    put: {
+      parameters: {
+        path: {
+          id: string;
+        };
+      };
       requestBody: {
         content: {
-          "application/json": components["schemas"]["InboundPlan"];
+          "application/json": components["schemas"]["StockItem"];
         };
       };
       responses: {
-        /** @description Successful Created */
-        201: {
+        /** @description Successful Updated */
+        200: {
           content: never;
         };
         /** @description Bad request */
@@ -67,13 +72,6 @@ export type webhooks = Record<string, never>;
 
 export interface components {
   schemas: {
-    InboundPlan: {
-      /** Format: date */
-      arrivalDate: string;
-      itemId: string;
-      quantity: number;
-      unit: string;
-    };
     StockItem: {
       name: string;
     };
