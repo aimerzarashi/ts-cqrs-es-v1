@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
   const authorization = headersList.get('authorization');
 
   const accountId = extractAccountId(authorization);
-  if (accountId.kind == 'error') {
+  if (!accountId.success) {
     console.error(accountId.error);
     return NextResponse.json(
       { message: 'failed' },
@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
 
   const requestbody: RequestBody = await request.json();
   const validStockItem = validation(requestbody);
-  if (validStockItem.kind == 'error') {
+  if (!validStockItem.success) {
     console.error(validStockItem.error);
     return NextResponse.json(
       { message: 'failed' },
