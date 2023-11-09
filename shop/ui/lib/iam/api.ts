@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
-import { Result, createSuccess, createError } from "@/lib/function/result";
+import { Result, createSuccess, createError } from "@/lib/function/resultType";
 
 const iamDomain = process.env.IAM_URL;
 const iamAdminUsername = process.env.IAM_ADMIN_USERNAME;
