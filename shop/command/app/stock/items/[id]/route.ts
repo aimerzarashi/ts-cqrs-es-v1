@@ -7,7 +7,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
   const authorization = headersList.get('authorization');
 
   const accountId = extractAccountId(authorization);
-  if (accountId.kind == 'error') {
+  if (!accountId.success) {
     console.error(accountId.error);
     return NextResponse.json(
       { message: 'failed' },
