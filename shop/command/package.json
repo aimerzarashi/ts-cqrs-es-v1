@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "openapi-codegen": "npx openapi-typescript ./openapi.yaml -o ./types/openapi.d.ts",
+    "openapi-codegen": "npx openapi-typescript \"specs/**/*.yaml\" --output schemas/",
     "prisma": "npx dotenv -e .env.local -- npx prisma",
     "test": "find ./app -name '*.spec.ts' -exec node --import tsx --test {} \\;",
     "dev": "next dev",
