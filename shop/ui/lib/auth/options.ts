@@ -38,12 +38,12 @@ export const authOptions: NextAuthOptions = {
       // IAM providerにUserを登録する
       if (email == undefined && user.id == user.email) {
         const getAdminTokenResult = await getAdminToken();
-        if (getAdminTokenResult.kind === "error") {
+        if (!getAdminTokenResult.success) {
           console.warn(getAdminTokenResult.error.message);
           return false;
         }
         const createUserResult = await createUser(getAdminTokenResult.value.accessToken, user.email);
-        if (createUserResult.kind === "error") {
+        if (!createUserResult.success) {
           console.warn(createUserResult.error.message);
           return false;
         }
@@ -100,7 +100,7 @@ export const authOptions: NextAuthOptions = {
         if (token.refreshExpiresIn && currentTimestamp < token.refreshExpiresIn) {
           // IAM providerからRefreshTokenで取得する
           const userTokenResult = await refreshToken(token.refreshToken);
-          if (userTokenResult.kind === "error") {
+          if (!userTokenResult.success) {
             console.warn(userTokenResult.error.message);
             return token;
           }
@@ -115,7 +115,7 @@ export const authOptions: NextAuthOptions = {
         // IAM providerからユーザー認証でTokenを取得する
         if (token.email) {
           const userTokenResult = await getToken(token.email);
-          if (userTokenResult.kind === "error") {
+          if (!userTokenResult.success) {
             console.warn(userTokenResult.error.message);
             return token;
           }
