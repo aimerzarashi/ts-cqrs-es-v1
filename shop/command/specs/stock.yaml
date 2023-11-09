@@ -3,7 +3,7 @@ info:
   title: Command API
   version: 1.0.0
 servers:
-  - url: http://command-api.aimerzarashi.com
+  - url: https://shop-command.aimerzarashi.com
 paths:
   /stock/items:
     post:
