@@ -1,5 +1,5 @@
 import { Kafka, EachMessagePayload } from 'kafkajs';
-import { stockItemCreated } from '@/handlers/shop/stockItem';
+import { stockItemCreated, stockItemUpdated } from '@/handlers/shop/stockItem';
 
 type MessageValue = {
   schema: any
@@ -20,11 +20,8 @@ type MessageValue = {
 };
 
 const StockItemEventType = {
-  CREATED: 'Created'
-}
-
-type StockItemCreated = {
-  CREATED: 'Created'
+  CREATED: 'Created',
+  UPDATED: 'Updated',
 }
 
 async function runConsumer() {
@@ -40,6 +37,7 @@ async function runConsumer() {
 
   const eventHandlers = new Map<string, (aggregateId: string, eventPayload: any) => void>();
   eventHandlers.set(StockItemEventType.CREATED, stockItemCreated);
+  eventHandlers.set(StockItemEventType.UPDATED, stockItemUpdated);
 
   await consumer.run({
     eachMessage: async (messagePayload: EachMessagePayload) => {
