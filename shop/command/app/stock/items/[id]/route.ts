@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { headers } from 'next/headers';
 import { extractAccountId } from '@/lib/auth/validation';
-import { paths } from '@/types/openapi';
-
-type RequestBody = paths['/stock/items']['put']['requestBody']['content']['application/json'];
 
 export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
   const headersList = headers();
@@ -22,5 +19,5 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 
   console.debug(await request.json());
 
-  return NextResponse.json({ message: 'success' }, { status: 201 });
+  return NextResponse.json({ message: 'success' }, { status: 200 });
 }
