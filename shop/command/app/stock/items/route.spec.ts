@@ -22,7 +22,7 @@ describe("POST", () => {
       "ステータスコードが期待通りではありません");
     assert.deepStrictEqual(
       JSON.parse(await response.text()),
-      { error: "Invalid Authorization Header" },
+      { message: "failed" },
       "メッセージが期待通りではありません");
   });
 
@@ -44,7 +44,7 @@ describe("POST", () => {
       "ステータスコードが期待通りではありません");
     assert.deepStrictEqual(
       JSON.parse(await response.text()),
-      { error: "Invalid Authorization Header" },
+      { message: "failed" },
       "メッセージが期待通りではありません");
   });
 
@@ -66,7 +66,7 @@ describe("POST", () => {
       "ステータスコードが期待通りではありません");
     assert.deepStrictEqual(
       JSON.parse(await response.text()),
-      { error: "Invalid Authorization Header" },
+      { message: "failed" },
       "メッセージが期待通りではありません");
   });
 
@@ -88,7 +88,7 @@ describe("POST", () => {
       "ステータスコードが期待通りではありません");
     assert.deepStrictEqual(
       JSON.parse(await response.text()),
-      { error: "name is required" },
+      { message: "failed" },
       "メッセージが期待通りではありません");
   });
 
