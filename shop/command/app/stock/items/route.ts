@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { headers } from 'next/headers';
 import { extractAccountId } from '@/lib/auth/validation';
-import { paths } from '@/schmemas/stock';
+import { paths } from '@/schemas/stock';
 import { validation } from '@/app/stock/items/validation';
 import { PrismaClient } from '@prisma/client';
 
