@@ -1,13 +1,13 @@
 import { PrismaClient } from "@prisma/client";
 
-export async function stockItemCreated(aggregateId: string, eventPayload: any) {
+export async function stockItemCreated(aggregateId: string, payload: any) {
 
   const prisma = new PrismaClient();
   const result = await prisma.stockItem.create({
     data: {
       id: aggregateId,
-      accountId: JSON.parse(JSON.parse(eventPayload)).accountId,
-      name: JSON.parse(JSON.parse(eventPayload)).name
+      accountId: JSON.parse(JSON.parse(payload)).accountId,
+      name: JSON.parse(JSON.parse(payload)).name
     }
   });
 
@@ -16,7 +16,7 @@ export async function stockItemCreated(aggregateId: string, eventPayload: any) {
   });
 }
 
-export async function stockItemUpdated(aggregateId: string, eventPayload: any) {
+export async function stockItemUpdated(aggregateId: string, payload: any) {
 
   const prisma = new PrismaClient();
   const result = await prisma.stockItem.update({
@@ -24,7 +24,7 @@ export async function stockItemUpdated(aggregateId: string, eventPayload: any) {
       id: aggregateId
     },
     data: {
-      name: JSON.parse(JSON.parse(eventPayload)).name
+      name: JSON.parse(JSON.parse(payload)).name
     }
   });
 

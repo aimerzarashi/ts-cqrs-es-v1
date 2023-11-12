@@ -9,8 +9,8 @@ type MessageValue = {
       id: string;
       occurredAt: string;
       aggregateId: string;
-      eventType: string;
-      eventPayload: string;
+      type: string;
+      payload: string;
     }
     source: any
     op: any
@@ -26,16 +26,16 @@ const StockItemEventType = {
 
 async function runConsumer() {
   const kafka = new Kafka({
-    clientId: 'stockItemEvent',
+    clientId: 'StockItemEvent',
     brokers: ['eventmesh-kafka:9092'],
   });
 
   const consumer = kafka.consumer({ groupId: 'ShopSubscription' });
 
   await consumer.connect();
-  await consumer.subscribe({ topic: 'shop.public.stockItemEvent', fromBeginning: true });
+  await consumer.subscribe({ topic: 'shop.public.StockItemEvent', fromBeginning: true });
 
-  const eventHandlers = new Map<string, (aggregateId: string, eventPayload: any) => void>();
+  const eventHandlers = new Map<string, (aggregateId: string, payload: any) => void>();
   eventHandlers.set(StockItemEventType.CREATED, stockItemCreated);
   eventHandlers.set(StockItemEventType.UPDATED, stockItemUpdated);
 
@@ -50,20 +50,20 @@ async function runConsumer() {
 
       const messageValue: MessageValue = JSON.parse(message.value.toString());
       const event = messageValue.payload.after;
-      if (event === null) {
+      if (!event) {
         const error = new Error('message value is null:' + messageValue);
         console.log(error);
         return;
       }
 
-      const eventHandler = eventHandlers.get(event.eventType);
+      const eventHandler = eventHandlers.get(event.type);
       if (!eventHandler) {
-        const error = new Error('Unknown event type:' + event.eventType)
+        const error = new Error('Unknown event type:' + event.type)
         console.log(error);
         return;
       }
 
-      eventHandler(event.aggregateId, event.eventPayload);
+      eventHandler(event.aggregateId, event.payload);
     },
   });
 }
