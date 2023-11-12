@@ -31,16 +31,18 @@ export async function POST(request: NextRequest) {
   }
 
   const prisma = new PrismaClient();
+
   const stockItemEvent = await prisma.stockItemEvent.create({
     data: {
       aggregateId: crypto.randomUUID(),
-      eventType: 'Created',
-      eventPayload: JSON.stringify({
+      type: 'Created',
+      payload: JSON.stringify({
         accountId: accountId.value,
         ...validStockItem.value.body
       }),
     }
   });
+  prisma.$disconnect();
   if (!stockItemEvent) {
     console.error(new Error('failed to create stock item event'));
     return NextResponse.json(
