@@ -10,18 +10,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model stockItemEvent {
+model StockItemEvent {
   id            String    @id @default(cuid())
-  createdAt     DateTime  @default(now())
+  occurredAt    DateTime  @default(now())
   aggregateId   String
-  eventType     String
-  eventPayload  Json?
-}
-
-model inboundPlanEvent {
-  id            String    @id @default(cuid())
-  createdAt     DateTime  @default(now())
-  aggregateId   String
-  eventType     String
-  eventPayload  Json?
+  type          String
+  payload       Json?
 }
