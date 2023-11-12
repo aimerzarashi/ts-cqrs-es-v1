@@ -1,4 +1,4 @@
-import { Result, createSuccess, createError, pipe } from '@/lib/function/resultType';
+import { Result, createSuccess, createError, pipe } from '@/lib/fp/result';
 import * as jwt from "jsonwebtoken";
 
 type Authorization = string | null;
