@@ -1,5 +1,5 @@
-import { Result, createSuccess, createError, pipe } from '@/lib/function/resultType';
-import { paths } from '@/types/openapi';
+import { Result, createSuccess, createError, pipe } from '@/lib/fp/result';
+import { paths } from '@/schemas/stock';
 
 type RequestBody = paths['/stock/items']['post']['requestBody']['content']['application/json'];
 type StockItemCommand = {
