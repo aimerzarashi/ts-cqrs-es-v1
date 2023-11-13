@@ -4,7 +4,6 @@ export type StockItemEvent = {
   payload: StockItemEventPayload
 }
 export type StockItemEventPayload = CreatePayload | UpdatePayload;
-export type StockItemEvents = StockItemEvent[];
 
 export type CreatePayload = {
   accountId: string;
