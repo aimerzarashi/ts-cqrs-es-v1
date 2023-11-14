@@ -5,7 +5,8 @@
   "scripts": {
     "openapi-codegen": "npx openapi-typescript \"specs/**/*.yaml\" --output schemas/",
     "prisma": "npx dotenv -e .env.local -- npx prisma",
-    "test": "find ./app -name '*.spec.ts' -exec node --import tsx --test {} \\;",
+    "presentation-test": "find ./app -name '*.spec.ts' -exec npx dotenv -e .env.local -- node --import tsx --test {} \\;",
+    "domain-test": "find ./lib/domain -name '*.spec.ts' -exec npx dotenv -e .env.local -- node --import tsx --test {} \\;",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
