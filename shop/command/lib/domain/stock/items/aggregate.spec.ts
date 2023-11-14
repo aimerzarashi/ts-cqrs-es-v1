@@ -1,52 +1,26 @@
 import { describe, it } from "node:test";
 import assert from "node:assert";
-import { PrismaClient } from "@prisma/client";
-import { generate, create, regenerate, update } from "./aggregate";
+import { generate, regenerate } from "./aggregate";
 import {
-  StockItemCommand,
   CreateStockItemCommand,
   UpdateStockItemCommand,
+  create,
+  update,
 } from "./command";
-import { StockItemEvent } from "./event";
+import { store, get } from "@/lib/application/stock/items/repository";
 
 describe("create", () => {
   it("generate", async () => {
     const stockItem = generate();
     if (!stockItem.success) {
-      assert.fail("stockItem is null");
+      assert.fail("stockItem is error");
     }
   });
 
   it("apply", async () => {
     const stockItem = generate();
     if (!stockItem.success) {
-      assert.fail("stockItem is null");
-    }
-
-    const createStockItemCommand: CreateStockItemCommand = {
-      name: "test1",
-      accountId: crypto.randomUUID(),
-    };
-    const stockItemEvent = create(stockItem.value, createStockItemCommand);
-    if (!stockItemEvent.success) {
-      assert.fail("stockItemEvent is null");
-    }
-
-    const prisma = new PrismaClient();
-    const result = await prisma.stockItemEvent.create({
-      data: {
-        aggregateId: stockItemEvent.value.occurredEvent.aggregateId,
-        eventType: stockItemEvent.value.occurredEvent.eventType,
-        eventPayload: stockItemEvent.value.occurredEvent.eventPayload,
-      },
-    });
-    prisma.$disconnect();
-  });
-
-  it("regenerate", async () => {
-    const stockItem = generate();
-    if (!stockItem.success) {
-      assert.fail("stockItem is null");
+      assert.fail("stockItem is error");
     }
 
     const createStockItemCommand: CreateStockItemCommand = {
@@ -55,64 +29,56 @@ describe("create", () => {
     };
     const createResult = create(stockItem.value, createStockItemCommand);
     if (!createResult.success) {
-      assert.fail("stockItemEvent is null");
+      assert.fail("stockItemEvent is error");
     }
 
-    const prisma = new PrismaClient();
-    const result = await prisma.stockItemEvent.create({
-      data: {
-        aggregateId: createResult.value.occurredEvent.aggregateId,
-        eventType: createResult.value.occurredEvent.eventType,
-        eventPayload: createResult.value.occurredEvent.eventPayload,
-      },
-    });
-    if (!result) {
-      assert.fail("result is null");
+    const createStoreResult = await store(createResult.value.occurredEvent);
+    if (!createStoreResult.success) {
+      assert.fail("storeResult is error");
+    }
+  });
+
+  it("regenerate", async () => {
+    const stockItem = generate();
+    if (!stockItem.success) {
+      assert.fail("stockItem is error");
     }
 
-    const events = await prisma.stockItemEvent.findMany({
-      select: {
-        aggregateId: true,
-        eventPayload: true,
-        eventType: true,
-      },
-      where: {
-        aggregateId: createResult.value.aggregate.id,
-      },
-    });
-    const stockItemEvents: StockItemEvent[] = events.map(
-      (event) =>
-      ({
-        aggregateId: event.aggregateId,
-        eventType: event.eventType,
-        eventPayload: event.eventPayload,
-      } as StockItemEvent)
-    );
+    const createStockItemCommand: CreateStockItemCommand = {
+      name: "test1",
+      accountId: crypto.randomUUID(),
+    };
+    const createResult = create(stockItem.value, createStockItemCommand);
+    if (!createResult.success) {
+      assert.fail("stockItemEvent is error");
+    }
 
-    const regenerateResult = regenerate(stockItemEvents);
+    const createStoreResult = await store(createResult.value.occurredEvent);
+    if (!createStoreResult.success) {
+      assert.fail("storeResult is error");
+    }
+
+    const stockItemEvents = await get(stockItem.value.id);
+    if (!stockItemEvents.success) {
+      assert.fail("stockItemEvents is error");
+    }
+
+    const regenerateResult = regenerate(stockItemEvents.value);
     if (!regenerateResult.success) {
-      assert.fail("regeneratedStockItem is null");
+      assert.fail("regeneratedStockItem is error");
     }
 
     const updateStockItemCommand: UpdateStockItemCommand = {
       name: "test1",
     };
-    const updateResult = update(
-      regenerateResult.value,
-      updateStockItemCommand
-    );
+    const updateResult = update(regenerateResult.value, updateStockItemCommand);
     if (!updateResult.success) {
-      assert.fail("stockItemUpdatedEvent is null");
+      assert.fail("stockItemUpdatedEvent is error");
     }
 
-    const result2 = await prisma.stockItemEvent.create({
-      data: {
-        aggregateId: updateResult.value.occurredEvent.aggregateId,
-        eventType: updateResult.value.occurredEvent.eventType,
-        eventPayload: updateResult.value.occurredEvent.eventPayload,
-      },
-    });
-
-    prisma.$disconnect();
+    const updateStoreResult = await store(updateResult.value.occurredEvent);
+    if (!updateStoreResult.success) {
+      assert.fail("updateStoreResult is error");
+    }
   });
 });
