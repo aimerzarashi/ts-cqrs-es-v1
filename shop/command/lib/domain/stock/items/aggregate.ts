@@ -33,18 +33,18 @@ export function regenerate(
   };
 
   return events.reduce((result: Result<any>, event) => {
-    const commandHandler = CommandHandlers.get(event.eventType);
+    const commandHandler = CommandHandlers.get(event.type);
 
     if (!commandHandler) {
       return createError(
-        new Error(`Unknown event type: ${event.eventType}`),
+        new Error(`Unknown event type: ${event.type}`),
         event
       );
     }
 
     const applyResult = commandHandler(
       result.value.aggregate,
-      event.eventPayload
+      event.payload
     );
 
     return applyResult.success

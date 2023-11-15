@@ -2,8 +2,8 @@ import { describe, it } from "node:test";
 import assert from "node:assert";
 import { generate, regenerate } from "./aggregate";
 import {
-  CreateStockItemCommand,
-  UpdateStockItemCommand,
+  StockItemCreateCommand,
+  StockItemUpdateCommand,
   create,
   update,
 } from "./command";
@@ -23,11 +23,11 @@ describe("create", () => {
       assert.fail("stockItem is error");
     }
 
-    const createStockItemCommand: CreateStockItemCommand = {
+    const StockItemCreateCommand: StockItemCreateCommand = {
       name: "test1",
       accountId: crypto.randomUUID(),
     };
-    const createResult = create(stockItem.value, createStockItemCommand);
+    const createResult = create(stockItem.value, StockItemCreateCommand);
     if (!createResult.success) {
       assert.fail("stockItemEvent is error");
     }
@@ -44,11 +44,11 @@ describe("create", () => {
       assert.fail("stockItem is error");
     }
 
-    const createStockItemCommand: CreateStockItemCommand = {
+    const StockItemCreateCommand: StockItemCreateCommand = {
       name: "test1",
       accountId: crypto.randomUUID(),
     };
-    const createResult = create(stockItem.value, createStockItemCommand);
+    const createResult = create(stockItem.value, StockItemCreateCommand);
     if (!createResult.success) {
       assert.fail("stockItemEvent is error");
     }
@@ -68,10 +68,10 @@ describe("create", () => {
       assert.fail("regeneratedStockItem is error");
     }
 
-    const updateStockItemCommand: UpdateStockItemCommand = {
+    const StockItemUpdateCommand: StockItemUpdateCommand = {
       name: "test1",
     };
-    const updateResult = update(regenerateResult.value, updateStockItemCommand);
+    const updateResult = update(regenerateResult.value, StockItemUpdateCommand);
     if (!updateResult.success) {
       assert.fail("stockItemUpdatedEvent is error");
     }

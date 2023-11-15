@@ -1,41 +1,24 @@
 import { Result, createError, createSuccess } from "@/lib/fp/result";
-import {
-  StockItemAggregate,
-} from "./aggregate";
+import { StockItemAggregate } from "./aggregate";
+import { StockItemCreatedEvent, StockItemUpdatedEvent } from "./event";
+import { components } from "@/schemas/StockItem";
 
 export type ApplyResult = {
   appliedAggregate: StockItemAggregate;
   occurredEvent: StockItemEvent;
 };
 
-export type StockItemCommand = CreateStockItemCommand | UpdateStockItemCommand;
+export type StockItemCommand = StockItemCreateCommand | StockItemUpdateCommand;
 
 export type StockItemEvent = StockItemCreatedEvent | StockItemUpdatedEvent;
 
-export type StockItemCreatedEvent = {
-  aggregateId: string;
-  eventType: "Created";
-  eventPayload: CreateStockItemCommand;
-};
+export type StockItemCreateCommand = components["schemas"]["StockItemCreateCommand"];
 
-export type StockItemUpdatedEvent = {
-  aggregateId: string;
-  eventType: "Updated";
-  eventPayload: UpdateStockItemCommand;
-};
-
-export type CreateStockItemCommand = {
-  accountId: string;
-  name: string;
-};
-
-export type UpdateStockItemCommand = {
-  name: string;
-};
+export type StockItemUpdateCommand = components["schemas"]["StockItemUpdateCommand"];
 
 export const create = (
   aggregate: StockItemAggregate,
-  command: CreateStockItemCommand
+  command: StockItemCreateCommand
 ): Result<ApplyResult> => {
   if (!command.name) {
     return createError(
@@ -58,8 +41,8 @@ export const create = (
 
   const occurredEvent: StockItemCreatedEvent = {
     aggregateId: aggregate.id,
-    eventType: "Created",
-    eventPayload: {
+    type: "Created",
+    payload: {
       name: command.name,
       accountId: command.accountId,
     },
@@ -73,7 +56,7 @@ export const create = (
 
 export const update = (
   aggregate: StockItemAggregate,
-  command: UpdateStockItemCommand
+  command: StockItemUpdateCommand
 ): Result<ApplyResult> => {
   if (!command.name) {
     return createError(new Error("name is required"), command);
@@ -87,8 +70,8 @@ export const update = (
 
   const occurredEvent: StockItemUpdatedEvent = {
     aggregateId: aggregate.id,
-    eventType: "Updated",
-    eventPayload: {
+    type: "Updated",
+    payload: {
       name: command.name,
     },
   };

@@ -1,15 +1,7 @@
-import { CreateStockItemCommand, UpdateStockItemCommand } from "./command";
+import { components } from "@/schemas/StockItemEvent";
 
-export type StockItemEvent = StockItemCreatedEvent | StockItemUpdatedEvent;
+export type StockItemEvent = components["schemas"]["StockItemEvent"];
 
-export type StockItemCreatedEvent = {
-  aggregateId: string;
-  eventType: "Created";
-  eventPayload: CreateStockItemCommand;
-};
+export type StockItemCreatedEvent = components["schemas"]["StockItemCreatedEvent"];
 
-export type StockItemUpdatedEvent = {
-  aggregateId: string;
-  eventType: "Updated";
-  eventPayload: UpdateStockItemCommand;
-};
+export type StockItemUpdatedEvent = components["schemas"]["StockItemUpdatedEvent"];
