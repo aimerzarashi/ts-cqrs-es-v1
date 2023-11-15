@@ -1,7 +1,7 @@
 import { Result, createError, createSuccess } from "@/lib/fp/result";
 import { StockItemAggregate } from "./aggregate";
 import { StockItemCreatedEvent, StockItemUpdatedEvent } from "./event";
-import { components } from "@/schemas/StockItem";
+import { components } from "@/schemas/stockItem";
 
 export type ApplyResult = {
   appliedAggregate: StockItemAggregate;
