@@ -10,7 +10,7 @@ export interface paths {
     post: {
       requestBody: {
         content: {
-          "application/json": components["schemas"]["StockItem"];
+          "application/json": components["schemas"]["StockItemCreateCommand"];
         };
       };
       responses: {
@@ -43,7 +43,7 @@ export interface paths {
       };
       requestBody: {
         content: {
-          "application/json": components["schemas"]["StockItem"];
+          "application/json": components["schemas"]["StockItemUpdateCommand"];
         };
       };
       responses: {
@@ -72,7 +72,11 @@ export type webhooks = Record<string, never>;
 
 export interface components {
   schemas: {
-    StockItem: {
+    StockItemCreateCommand: {
+      name: string;
+      accountId: string;
+    };
+    StockItemUpdateCommand: {
       name: string;
     };
   };
