@@ -1,0 +1,126 @@
+asyncapi: 2.6.0
+info:
+  title: StockItem Events
+  version: 1.0.0
+servers:
+  development:
+    url: event-mesh.dev.localhost
+    description: Development server
+    protocol: kafka
+    protocolVersion: 1.0.0
+channels:
+  StockItemEvents:
+    description: Events related to the StockItem model
+    publish:
+      summary: Publish StockItem Events.
+      operationId: publishStockItemEvent
+      message:
+        oneOf:
+          - $ref: "#/components/messages/StockItemEventCreated"
+          - $ref: "#/components/messages/StockItemEventUpdated"
+    subscribe:
+      summary: Receive StockItem Events.
+      operationId: receiveStockItemEvent
+      message:
+        oneOf:
+          - $ref: "#/components/messages/StockItemEventCreated"
+          - $ref: "#/components/messages/StockItemEventUpdated"
+components:
+  messages:
+    StockItemEventCreated:
+      name: Created
+      title: StockItem event when StockItem created
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/StockItemEvent"
+    StockItemEventUpdated:
+      name: Updated
+      title: StockItem event when StockItem Updated
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/StockItemEvent"
+  schemas:
+    StockItemEventType:
+      type: string
+      enum:
+        - Created
+        - Updated
+    StockItemEvent:
+      type: object
+      required:
+        - payload
+      properties:
+        schemas:
+          type: object
+        payload:
+          type: object
+          required:
+            - after
+          properties:
+            before:
+              type: object
+            after:
+              type: object
+              required:
+                - id
+                - occurredAt
+              properties:
+                id:
+                  type: string
+                  format: uuid
+                occurredAt:
+                  type: string
+                  format: date-time
+              oneOf:
+                - $ref: "#/components/schemas/StockItemCreatedEvent"
+                - $ref: "#/components/schemas/StockItemUpdatedEvent"
+            source:
+              type: object
+            op:
+              type: string
+            ts_ms:
+              type: string
+    StockItemCreatedEvent:
+      type: object
+      required:
+        - aggregateId
+        - type
+        - payload
+      properties:
+        aggregateId:
+          type: string
+          format: uuid
+        type:
+          type: string
+          const: Created
+        payload:
+          type: object
+          required:
+            - name
+            - accountId
+          properties:
+            name:
+              type: string
+            accountId:
+              type: string
+    StockItemUpdatedEvent:
+      type: object
+      required:
+        - aggregateId
+        - type
+        - payload
+      properties:
+        aggregateId:
+          type: string
+          format: uuid
+        type:
+          type: string
+          const: Updated
+        payload:
+          type: object
+          required:
+            - name
+            - accountId
+          properties:
+            name:
+              type: string
