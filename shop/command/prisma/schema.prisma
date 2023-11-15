@@ -14,6 +14,6 @@ model StockItemEvent {
   id            String    @id @default(cuid())
   occurredAt    DateTime  @default(now())
   aggregateId   String
-  eventType     String
-  eventPayload  Json?
+  type          String
+  payload       Json?
 }
