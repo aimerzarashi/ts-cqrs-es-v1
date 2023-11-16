@@ -7,7 +7,7 @@ import {
   create,
   update,
 } from "./command";
-import { store, get } from "@/lib/application/stock/items/repository";
+import { store, get } from "@/lib/domain/stock/items/repository";
 
 describe("create", () => {
   it("generate", async () => {
