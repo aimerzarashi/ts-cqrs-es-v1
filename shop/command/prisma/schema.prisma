@@ -11,8 +11,8 @@ datasource db {
 }
 
 model StockItemEvent {
-  id            String    @id @default(cuid())
-  occurredAt    DateTime  @default(now())
+  id            String    @id
+  occurredAt    DateTime
   aggregateId   String
   type          String
   payload       Json?
