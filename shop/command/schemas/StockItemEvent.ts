@@ -16,18 +16,17 @@ export interface components {
       schemas?: Record<string, never>;
       payload: {
         before?: Record<string, never>;
-        after: {
-          /** Format: uuid */
-          id: string;
-          /** Format: date-time */
-          occurredAt: string;
-        } & (components["schemas"]["StockItemCreatedEvent"] | components["schemas"]["StockItemUpdatedEvent"]);
+        after: components["schemas"]["StockItemCreatedEvent"] | components["schemas"]["StockItemUpdatedEvent"];
         source?: Record<string, never>;
         op?: string;
         ts_ms?: string;
       };
     };
     StockItemCreatedEvent: {
+      /** Format: uuid */
+      id: string;
+      /** Format: date-time */
+      occurredAt: string;
       /** Format: uuid */
       aggregateId: string;
       /** @constant */
@@ -38,6 +37,10 @@ export interface components {
       };
     };
     StockItemUpdatedEvent: {
+      /** Format: uuid */
+      id: string;
+      /** Format: date-time */
+      occurredAt: string;
       /** Format: uuid */
       aggregateId: string;
       /** @constant */
