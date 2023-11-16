@@ -1,8 +1,7 @@
 import { Result, createError, createSuccess } from "@/lib/fp/result";
 import { StockItemAggregate } from "./aggregate";
 import { StockItemCreatedEvent, StockItemUpdatedEvent } from "./event";
-import { components } from "@/schemas/stockItem";
-
+import { components } from "@/schemas/StockItem";
 export type ApplyResult = {
   appliedAggregate: StockItemAggregate;
   occurredEvent: StockItemEvent;
@@ -21,12 +20,7 @@ export const create = (
   command: StockItemCreateCommand
 ): Result<ApplyResult> => {
   if (!command.name) {
-    return createError(
-      new Error(
-        JSON.stringify({ message: "name is required", command: command })
-      ),
-      command
-    );
+    return createError(new Error("name is required"), command);
   }
 
   if (!command.accountId) {
@@ -40,6 +34,8 @@ export const create = (
   };
 
   const occurredEvent: StockItemCreatedEvent = {
+    id: crypto.randomUUID(),
+    occurredAt: new Date().toISOString(),
     aggregateId: aggregate.id,
     type: "Created",
     payload: {
@@ -69,6 +65,8 @@ export const update = (
   };
 
   const occurredEvent: StockItemUpdatedEvent = {
+    id: crypto.randomUUID(),
+    occurredAt: new Date().toISOString(),
     aggregateId: aggregate.id,
     type: "Updated",
     payload: {
