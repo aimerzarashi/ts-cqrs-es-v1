@@ -1,14 +1,16 @@
 import { PrismaClient } from "@prisma/client";
 import { Result, createSuccess, createError } from "@/lib/fp/result";
-import { StockItemEvent } from "@/lib/domain/stock/items/aggregate";
+import { StockItemEvent } from "@/lib/domain/stock/items/event";
 
 export async function store(event: StockItemEvent): Promise<Result<void>> {
   const prisma = new PrismaClient();
   const result = await prisma.stockItemEvent.create({
     data: {
+      id: event.id,
+      occurredAt: event.occurredAt,
       aggregateId: event.aggregateId,
-      eventType: event.eventType,
-      eventPayload: event.eventPayload,
+      type: event.type,
+      payload: event.payload,
     },
   });
   if (!result) {
@@ -31,20 +33,27 @@ export async function get(
 
   const events = await prisma.stockItemEvent.findMany({
     select: {
+      id: true,
+      occurredAt: true,
       aggregateId: true,
-      eventPayload: true,
-      eventType: true,
+      type: true,
+      payload: true,
     },
     where: {
       aggregateId: aggregateId,
     },
+    orderBy: {
+      occurredAt: "asc",
+    }
   });
   const stockItemEvents: StockItemEvent[] = events.map(
     (event) =>
     ({
+      id: event.id,
+      occurredAt: event.occurredAt.toDateString(),
       aggregateId: event.aggregateId,
-      eventType: event.eventType,
-      eventPayload: event.eventPayload,
+      type: event.type,
+      payload: event.payload,
     } as StockItemEvent)
   );
 
