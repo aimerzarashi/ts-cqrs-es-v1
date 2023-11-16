@@ -1,6 +1,6 @@
 import { components } from "@/schemas/StockItemEvent";
 
-export type StockItemEvent = components["schemas"]["StockItemEvent"];
+export type StockItemEvent = StockItemCreatedEvent | StockItemUpdatedEvent;
 
 export type StockItemCreatedEvent = components["schemas"]["StockItemCreatedEvent"];
 
