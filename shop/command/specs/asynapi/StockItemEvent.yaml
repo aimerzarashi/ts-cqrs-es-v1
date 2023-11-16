@@ -60,17 +60,6 @@ components:
             before:
               type: object
             after:
-              type: object
-              required:
-                - id
-                - occurredAt
-              properties:
-                id:
-                  type: string
-                  format: uuid
-                occurredAt:
-                  type: string
-                  format: date-time
               oneOf:
                 - $ref: "#/components/schemas/StockItemCreatedEvent"
                 - $ref: "#/components/schemas/StockItemUpdatedEvent"
@@ -83,10 +72,18 @@ components:
     StockItemCreatedEvent:
       type: object
       required:
+        - id
+        - occurredAt
         - aggregateId
         - type
         - payload
       properties:
+        id:
+          type: string
+          format: uuid
+        occurredAt:
+          type: string
+          format: date-time
         aggregateId:
           type: string
           format: uuid
@@ -106,10 +103,18 @@ components:
     StockItemUpdatedEvent:
       type: object
       required:
+        - id
+        - occurredAt
         - aggregateId
         - type
         - payload
       properties:
+        id:
+          type: string
+          format: uuid
+        occurredAt:
+          type: string
+          format: date-time
         aggregateId:
           type: string
           format: uuid
