@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { headers } from 'next/headers';
 import { extractAccountId } from '@/lib/auth/validation';
-import { paths } from '@/schemas/stockItem';
+import { paths } from '@/schemas/StockItem';
 import { apply } from "@/app/stock/items/aggregate";
 import { get, save } from "@/app/stock/items/repository";
 import { StockItemEvent } from "@/app/stock/items/event";
