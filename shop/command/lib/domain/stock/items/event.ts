@@ -1,4 +1,4 @@
-import { components } from "@/schemas/StockItemEvent";
+import { components } from "@/schemas/stockItemEvent";
 
 export type StockItemEvent = StockItemCreatedEvent | StockItemUpdatedEvent;
 
