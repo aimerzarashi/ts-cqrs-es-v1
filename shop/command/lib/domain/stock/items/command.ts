@@ -1,15 +1,14 @@
 import { Result, createError, createSuccess } from "@/lib/fp/result";
 import { StockItemAggregate } from "./aggregate";
-import { StockItemCreatedEvent, StockItemUpdatedEvent } from "./event";
+import { StockItemEvent, StockItemCreatedEvent, StockItemUpdatedEvent } from "./event";
 import { components } from "@/schemas/stockItem";
+
 export type ApplyResult = {
   appliedAggregate: StockItemAggregate;
   occurredEvent: StockItemEvent;
 };
 
 export type StockItemCommand = StockItemCreateCommand | StockItemUpdateCommand;
-
-export type StockItemEvent = StockItemCreatedEvent | StockItemUpdatedEvent;
 
 export type StockItemCreateCommand = components["schemas"]["StockItemCreateCommand"];
 
@@ -79,3 +78,10 @@ export const update = (
     occurredEvent: occurredEvent,
   });
 };
+
+export const CommandHandlers = new Map<
+  string,
+  (aggregate: StockItemAggregate, command: any) => Result<ApplyResult>
+>();
+CommandHandlers.set("Created", create);
+CommandHandlers.set("Updated", update);

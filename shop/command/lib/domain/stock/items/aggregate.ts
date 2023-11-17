@@ -1,5 +1,6 @@
 import { Result, createError, createSuccess } from "@/lib/fp/result";
-import { create, update, ApplyResult, StockItemEvent } from "./command";
+import { CommandHandlers } from "./command";
+import { StockItemEvent } from "./event";
 
 // StockItem モデル
 export type StockItemAggregate = {
@@ -15,13 +16,6 @@ export function generate(): Result<StockItemAggregate> {
     accountId: "",
   });
 }
-
-const CommandHandlers = new Map<
-  string,
-  (aggregate: StockItemAggregate, command: any) => Result<ApplyResult>
->();
-CommandHandlers.set("Created", create);
-CommandHandlers.set("Updated", update);
 
 export function regenerate(
   events: StockItemEvent[]
