@@ -50,7 +50,7 @@ export async function get(
     (event) =>
     ({
       id: event.id,
-      occurredAt: event.occurredAt.toDateString(),
+      occurredAt: event.occurredAt.toISOString(),
       aggregateId: event.aggregateId,
       type: event.type,
       payload: event.payload,

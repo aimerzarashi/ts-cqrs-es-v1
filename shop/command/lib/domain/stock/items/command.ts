@@ -1,7 +1,7 @@
 import { Result, createError, createSuccess } from "@/lib/fp/result";
 import { StockItemAggregate } from "./aggregate";
 import { StockItemEvent, StockItemCreatedEvent, StockItemUpdatedEvent } from "./event";
-import { components } from "@/schemas/stockItem";
+import { components } from "@/schemas/asyncapi/stockItemEvent";
 
 export type ApplyResult = {
   appliedAggregate: StockItemAggregate;
@@ -10,14 +10,15 @@ export type ApplyResult = {
 
 export type StockItemCommand = StockItemCreateCommand | StockItemUpdateCommand;
 
-export type StockItemCreateCommand = components["schemas"]["StockItemCreateCommand"];
+export type StockItemCreateCommand = components["schemas"]["StockItemCreateCommand"]
 
 export type StockItemUpdateCommand = components["schemas"]["StockItemUpdateCommand"];
 
-export const create = (
-  aggregate: StockItemAggregate,
-  command: StockItemCreateCommand
-): Result<ApplyResult> => {
+export function create(command: StockItemCreateCommand): Result<ApplyResult> {
+  if (!command.id) {
+    return createError(new Error("id is required"), command);
+  }
+
   if (!command.name) {
     return createError(new Error("name is required"), command);
   }
@@ -27,7 +28,7 @@ export const create = (
   }
 
   const appliedAggregate: StockItemAggregate = {
-    id: aggregate.id,
+    id: command.id,
     name: command.name,
     accountId: command.accountId,
   };
@@ -35,9 +36,10 @@ export const create = (
   const occurredEvent: StockItemCreatedEvent = {
     id: crypto.randomUUID(),
     occurredAt: new Date().toISOString(),
-    aggregateId: aggregate.id,
+    aggregateId: appliedAggregate.id,
     type: "Created",
     payload: {
+      id: command.id,
       name: command.name,
       accountId: command.accountId,
     },
@@ -47,7 +49,7 @@ export const create = (
     appliedAggregate: appliedAggregate,
     occurredEvent: occurredEvent,
   });
-};
+}
 
 export const update = (
   aggregate: StockItemAggregate,
@@ -83,5 +85,5 @@ export const CommandHandlers = new Map<
   string,
   (aggregate: StockItemAggregate, command: any) => Result<ApplyResult>
 >();
-CommandHandlers.set("Created", create);
-CommandHandlers.set("Updated", update);
+CommandHandlers.set("Created", (aggregate, command) => create(command));
+CommandHandlers.set("Updated", (aggregate, command) => update(aggregate, command));

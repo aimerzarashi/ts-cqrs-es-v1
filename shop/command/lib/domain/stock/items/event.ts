@@ -1,4 +1,4 @@
-import { components } from "@/schemas/stockItemEvent";
+import { components } from "@/schemas/asyncapi/stockItemEvent";
 
 export type StockItemEvent = StockItemCreatedEvent | StockItemUpdatedEvent;
 

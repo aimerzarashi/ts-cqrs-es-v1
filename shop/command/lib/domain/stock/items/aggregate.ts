@@ -9,23 +9,19 @@ export type StockItemAggregate = {
   accountId: string;
 };
 
-export function generate(): Result<StockItemAggregate> {
-  return createSuccess({
-    id: crypto.randomUUID(),
+export function generate(
+  aggregateId: string
+): StockItemAggregate {
+  return {
+    id: aggregateId,
     name: "",
     accountId: "",
-  });
+  };
 }
 
 export function regenerate(
   events: StockItemEvent[]
 ): Result<StockItemAggregate> {
-  const initialAggregate: StockItemAggregate = {
-    id: events[0].aggregateId,
-    name: "",
-    accountId: "",
-  };
-
   return events.reduce((result: Result<any>, event) => {
     const commandHandler = CommandHandlers.get(event.type);
 
@@ -44,5 +40,5 @@ export function regenerate(
     return applyResult.success
       ? createSuccess(applyResult.value.appliedAggregate)
       : result;
-  }, createSuccess({ aggregate: initialAggregate }));
+  }, createError(new Error("No events"), events));
 }
