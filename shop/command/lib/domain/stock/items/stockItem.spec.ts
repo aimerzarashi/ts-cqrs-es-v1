@@ -81,7 +81,7 @@ describe("stockItem aggregate", () => {
     }
   });
 
-  it("regenerate one event", async () => {
+  it("regenerate some event", async () => {
     const StockItemCreateCommand: StockItemCreateCommand = {
       id: crypto.randomUUID(),
       name: "test1",
