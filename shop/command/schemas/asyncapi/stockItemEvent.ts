@@ -31,10 +31,12 @@ export interface components {
       aggregateId: string;
       /** @constant */
       type: "Created";
-      payload: {
-        name: string;
-        accountId: string;
-      };
+      payload: components["schemas"]["StockItemCreateCommand"];
+    };
+    StockItemCreateCommand: {
+      id: string;
+      name: string;
+      accountId: string;
     };
     StockItemUpdatedEvent: {
       /** Format: uuid */
@@ -45,9 +47,10 @@ export interface components {
       aggregateId: string;
       /** @constant */
       type: "Updated";
-      payload: {
-        name: string;
-      };
+      payload: components["schemas"]["StockItemUpdateCommand"];
+    };
+    StockItemUpdateCommand: {
+      name: string;
     };
   };
   responses: never;

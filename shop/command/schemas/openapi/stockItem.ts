@@ -8,11 +8,7 @@ export interface paths {
   "/stock/items": {
     /** Register stock items */
     post: {
-      requestBody: {
-        content: {
-          "application/json": components["schemas"]["StockItemCreateCommand"];
-        };
-      };
+      requestBody: components["requestBodies"]["StockItemCreateCommand"];
       responses: {
         /** @description Successful Created */
         201: {
@@ -41,11 +37,7 @@ export interface paths {
           id: string;
         };
       };
-      requestBody: {
-        content: {
-          "application/json": components["schemas"]["StockItemUpdateCommand"];
-        };
-      };
+      requestBody: components["requestBodies"]["StockItemUpdateCommand"];
       responses: {
         /** @description Successful Updated */
         200: {
@@ -71,18 +63,26 @@ export interface paths {
 export type webhooks = Record<string, never>;
 
 export interface components {
-  schemas: {
-    StockItemCreateCommand: {
-      name: string;
-      accountId: string;
-    };
-    StockItemUpdateCommand: {
-      name: string;
-    };
-  };
+  schemas: never;
   responses: never;
   parameters: never;
-  requestBodies: never;
+  requestBodies: {
+    StockItemCreateCommand: {
+      content: {
+        "application/json": {
+          name: string;
+          accountId: string;
+        };
+      };
+    };
+    StockItemUpdateCommand: {
+      content: {
+        "application/json": {
+          name: string;
+        };
+      };
+    };
+  };
   headers: never;
   pathItems: never;
 }

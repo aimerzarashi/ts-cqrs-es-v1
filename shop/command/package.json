@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "openapi-codegen": "npx openapi-typescript \"specs/**/*.yaml\" --output schemas/",
+    "openapi-codegen": "npx openapi-typescript 'openapi/**/*.yaml' --output schemas/",
+    "asyncapi-codegen": "npx openapi-typescript 'asyncapi/**/*.yaml' --output schemas/",
     "prisma": "npx dotenv -e .env.local -- npx prisma",
     "test": "find ./app -name '*.spec.ts' -exec npx dotenv -e .env.local -- node --import tsx --test {} \\;",
     "domain-test": "find ./lib/domain -name '*.spec.ts' -exec npx dotenv -e .env.local -- node --import tsx --test {} \\;",
