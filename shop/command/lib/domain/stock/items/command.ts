@@ -4,17 +4,15 @@ import { StockItemEvent, StockItemCreatedEvent, StockItemUpdatedEvent } from "./
 import { components } from "@/schemas/asyncapi/stockItemEvent";
 
 export type ApplyResult = {
-  appliedAggregate: StockItemAggregate;
-  occurredEvent: StockItemEvent;
+  aggregate: StockItemAggregate;
+  domainEvent: StockItemEvent;
 };
 
 export type StockItemCommand = StockItemCreateCommand | StockItemUpdateCommand;
-
 export type StockItemCreateCommand = components["schemas"]["StockItemCreateCommand"]
-
 export type StockItemUpdateCommand = components["schemas"]["StockItemUpdateCommand"];
 
-export function create(command: StockItemCreateCommand): Result<ApplyResult> {
+export const create = (command: StockItemCreateCommand): Result<ApplyResult> => {
   if (!command.id) {
     return createError(new Error("id is required"), command);
   }
@@ -33,10 +31,10 @@ export function create(command: StockItemCreateCommand): Result<ApplyResult> {
     accountId: command.accountId,
   };
 
-  const occurredEvent: StockItemCreatedEvent = {
+  const domainEvent: StockItemCreatedEvent = {
     id: crypto.randomUUID(),
     occurredAt: new Date().toISOString(),
-    aggregateId: appliedAggregate.id,
+    aggregateId: command.id,
     type: "Created",
     payload: {
       id: command.id,
@@ -46,8 +44,8 @@ export function create(command: StockItemCreateCommand): Result<ApplyResult> {
   };
 
   return createSuccess({
-    appliedAggregate: appliedAggregate,
-    occurredEvent: occurredEvent,
+    aggregate: appliedAggregate,
+    domainEvent: domainEvent,
   });
 }
 
@@ -65,7 +63,7 @@ export const update = (
     accountId: aggregate.accountId,
   };
 
-  const occurredEvent: StockItemUpdatedEvent = {
+  const domainEvent: StockItemUpdatedEvent = {
     id: crypto.randomUUID(),
     occurredAt: new Date().toISOString(),
     aggregateId: aggregate.id,
@@ -76,8 +74,8 @@ export const update = (
   };
 
   return createSuccess({
-    appliedAggregate: appliedAggregate,
-    occurredEvent: occurredEvent,
+    aggregate: appliedAggregate,
+    domainEvent: domainEvent,
   });
 };
 

@@ -9,16 +9,6 @@ export type StockItemAggregate = {
   accountId: string;
 };
 
-export function generate(
-  aggregateId: string
-): StockItemAggregate {
-  return {
-    id: aggregateId,
-    name: "",
-    accountId: "",
-  };
-}
-
 export function regenerate(
   events: StockItemEvent[]
 ): Result<StockItemAggregate> {
@@ -38,7 +28,7 @@ export function regenerate(
     );
 
     return applyResult.success
-      ? createSuccess(applyResult.value.appliedAggregate)
+      ? createSuccess(applyResult.value.aggregate)
       : result;
   }, createError(new Error("No events"), events));
 }
