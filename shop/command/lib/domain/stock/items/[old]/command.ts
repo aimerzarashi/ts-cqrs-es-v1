@@ -81,7 +81,7 @@ export const update = (
 
 export const CommandHandlers = new Map<
   string,
-  (aggregate: StockItemAggregate, command: any) => Result<ApplyResult>
+  (aggregate: StockItemAggregate, command: StockItemCommand) => Result<ApplyResult>
 >();
-CommandHandlers.set("Created", (aggregate, command) => create(command));
-CommandHandlers.set("Updated", (aggregate, command) => update(aggregate, command));
+CommandHandlers.set("Created", (undefined, command: any) => create(command));
+CommandHandlers.set("Updated", (aggregate: StockItemAggregate, command: any) => update(aggregate, command));

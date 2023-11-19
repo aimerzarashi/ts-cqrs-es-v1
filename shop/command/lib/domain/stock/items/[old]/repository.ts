@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { Result, createSuccess, createError } from "@/lib/fp/result";
-import { StockItemEvent } from "./aggregate";
+import { StockItemEvent } from "@/lib/domain/stock/items/event";
 
 export async function store(event: StockItemEvent): Promise<Result<void>> {
   const prisma = new PrismaClient();

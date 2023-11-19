@@ -7,7 +7,7 @@ import {
   create,
   update,
 } from "./command";
-import { store, get } from "@/lib/domain/stock/items/repository";
+import { store, get } from "@/lib/domain/stock/items/@old/repository";
 
 describe("stockItem aggregate", () => {
 
