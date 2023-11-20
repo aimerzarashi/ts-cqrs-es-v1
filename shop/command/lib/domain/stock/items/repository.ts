@@ -1,34 +1,33 @@
 import { PrismaClient } from "@prisma/client";
 import { Result, createSuccess, createError } from "@/lib/fp/result";
-import { StockItemEvent } from "./aggregate";
+import { StockItemEvent, StockItemCommand } from "./aggregate";
+import { StoreEvent, FindEvents } from "@/lib/domain/repository";
 
-export async function store(event: StockItemEvent): Promise<Result<void>> {
+export const storeEvent: StoreEvent<StockItemCommand> = async (domainEvent) => {
   const prisma = new PrismaClient();
   const result = await prisma.stockItemEvent.create({
     data: {
-      id: event.id,
-      occurredAt: event.occurredAt,
-      aggregateId: event.aggregateId,
-      type: event.type,
-      payload: event.payload,
+      id: domainEvent.id,
+      occurredAt: domainEvent.occurredAt,
+      aggregateId: domainEvent.aggregateId,
+      type: domainEvent.type,
+      payload: domainEvent.payload,
     },
   });
   if (!result) {
     return createError(
       new Error(
-        JSON.stringify({ message: "Failed to store event", event: event })
+        JSON.stringify({ message: "Failed to store event", domainEvent: domainEvent })
       ),
-      event
+      domainEvent
     );
   }
 
   prisma.$disconnect();
   return createSuccess(undefined);
-}
+};
 
-export async function get(
-  aggregateId: string
-): Promise<Result<StockItemEvent[]>> {
+export const findEvents: FindEvents<StockItemCommand> = async (aggregateId) => {
   const prisma = new PrismaClient();
 
   const events = await prisma.stockItemEvent.findMany({
