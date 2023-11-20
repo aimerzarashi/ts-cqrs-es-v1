@@ -8,7 +8,6 @@ import {
 } from "./aggregate";
 
 import { storeEvent, findEvents } from "./repository";
-import { PrismaClient } from "@prisma/client";
 
 describe("stockItem aggregate", () => {
   it("create", async () => {
@@ -122,41 +121,7 @@ describe("stockItem aggregate", () => {
 });
 
 describe("stockItem repository", () => {
-  it("storeEvent", async () => {
-    const stockItemCreateCommand: StockItemCreateCommand = {
-      id: crypto.randomUUID(),
-      name: "test",
-      accountId: crypto.randomUUID(),
-    };
-    const createResult = create(stockItemCreateCommand);
-    if (!createResult.success) {
-      assert.fail("createResult is fail");
-    }
-    const { domainEvent } = createResult.value;
-    const storeEventResult = await storeEvent(domainEvent);
-    if (!storeEventResult.success) {
-      assert.fail("storeEventResult is fail");
-    }
-    const prisma = new PrismaClient();
-    const stockItemEvent = await prisma.stockItemEvent.findUnique({
-      where: {
-        id: domainEvent.id,
-      },
-    })
-    assert.deepEqual(stockItemEvent, {
-      id: domainEvent.id,
-      occurredAt: new Date(domainEvent.occurredAt),
-      aggregateId: domainEvent.aggregateId,
-      type: domainEvent.type,
-      payload: {
-        id: domainEvent.payload.id,
-        name: domainEvent.payload.name,
-        accountId: domainEvent.payload.accountId,
-      }
-    })
-  });
-
-  it("getEvents", async () => {
+  it("storeEvent & findEvents", async () => {
     const stockItemCreateCommand: StockItemCreateCommand = {
       id: crypto.randomUUID(),
       name: "test",
