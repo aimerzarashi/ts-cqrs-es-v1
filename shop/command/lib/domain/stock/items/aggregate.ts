@@ -2,7 +2,6 @@ import { components } from "@/schemas/asyncapi/stockItemEvent";
 
 import {
   ApplyResult,
-  DomainEvent,
   CommandHandlers,
   GenerateCurried,
 } from "@/lib/domain/aggregate";
@@ -24,8 +23,11 @@ type StockItem = {
   accountId: string;
 };
 
-export const commandHandlers: CommandHandlers<StockItem, StockItemCommand> =
-  new Map();
+export const commandHandlers: CommandHandlers<
+  StockItem,
+  StockItemCommand,
+  StockItemEvent
+> = new Map();
 commandHandlers.set("Created", (aggregate: StockItem, command: any) =>
   create(command)
 );
@@ -33,33 +35,42 @@ commandHandlers.set("Updated", (aggregate: StockItem, command: any) =>
   update(aggregate, command)
 );
 
-const generateCurried: GenerateCurried<StockItem, StockItemCommand> =
-  (commandHandlers) => (domainEvents) => {
-    return domainEvents.reduce((result: Result<StockItem>, event) => {
-      const commandHandler = commandHandlers.get(event.type);
+const CurriedGenerate: GenerateCurried<
+  StockItem,
+  StockItemCommand,
+  StockItemEvent
+> = (commandHandlers) => (domainEvents) => {
+  return domainEvents.reduce((result: Result<StockItem>, event) => {
+    const commandHandler = commandHandlers.get(event.type);
 
-      if (!commandHandler) {
-        return createError(
-          new Error(`Unknown event type: ${event.type}`),
-          event
-        );
-      }
+    if (!commandHandler) {
+      return createError(new Error(`Unknown event type: ${event.type}`), event);
+    }
 
-      const applyResult = commandHandler(result.value, event.payload);
+    const applyResult = commandHandler(result.value, event.payload);
 
-      return applyResult.success
-        ? createSuccess(applyResult.value.aggregate)
-        : applyResult;
-    }, createError(new Error("No events"), domainEvents));
-  };
+    return applyResult.success
+      ? createSuccess(applyResult.value.aggregate)
+      : applyResult;
+  }, createError(new Error("No events"), domainEvents));
+};
 
-export const generate: (
-  domainEvents: DomainEvent<StockItemCommand>[]
-) => Result<StockItem> = generateCurried(commandHandlers);
+export const generate: (domainEvents: StockItemEvent[]) => Result<StockItem> =
+  CurriedGenerate(commandHandlers);
 
 export const create = (
   command: StockItemCreateCommand
 ): Result<ApplyResult<StockItem, StockItemCreatedEvent>> => {
+  if (!command.id) {
+    return createError(new Error("id is required"), command);
+  }
+  if (!command.name) {
+    return createError(new Error("name is required"), command);
+  }
+  if (!command.accountId) {
+    return createError(new Error("accountId is required"), command);
+  }
+
   const appliedAggregate: StockItem = {
     id: command.id,
     name: command.name,
@@ -88,6 +99,10 @@ export const update = (
   aggregate: StockItem,
   command: StockItemUpdateCommand
 ): Result<ApplyResult<StockItem, StockItemUpdatedEvent>> => {
+  if (!command.name) {
+    return createError(new Error("name is required"), command);
+  }
+
   const appliedAggregate: StockItem = {
     id: aggregate.id,
     name: command.name,

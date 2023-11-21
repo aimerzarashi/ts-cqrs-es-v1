@@ -8,6 +8,7 @@ import {
 } from "./aggregate";
 
 import { storeEvent, findEvents } from "./repository";
+import { PrismaClient } from "@prisma/client";
 
 describe("stockItem aggregate", () => {
   it("create", async () => {
@@ -131,15 +132,28 @@ describe("stockItem repository", () => {
     if (!createResult.success) {
       assert.fail("createResult is fail");
     }
+
+    const prisma = new PrismaClient();
+
     const { domainEvent } = createResult.value;
-    const storeEventResult = await storeEvent(domainEvent);
+    const storeEventResult = await storeEvent(prisma, domainEvent);
     if (!storeEventResult.success) {
       assert.fail("storeEventResult is fail");
     }
-    const findEventsResult = await findEvents(domainEvent.aggregateId);
+    const findEventsResult = await findEvents(prisma, domainEvent.aggregateId);
     if (!findEventsResult.success) {
-      assert.fail("getEventsResult is fail");
+      assert.fail("findEventsResult is fail");
     }
     assert.deepEqual(findEventsResult.value, [domainEvent]);
+
+  })
+
+  it("findEvents fail", async () => {
+    const prisma = new PrismaClient();
+    const aggregateId = crypto.randomUUID();
+    const findEventsResult = await findEvents(prisma, aggregateId);
+    if (findEventsResult.success) {
+      assert.fail("findEventsResult is success");
+    }
   })
 });

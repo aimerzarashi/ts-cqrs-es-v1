@@ -1,6 +1,12 @@
 import { Result } from "@/lib/fp/result";
-import { DomainEvent } from "./aggregate";
+import { PrismaClient } from "@prisma/client";
 
-export type StoreEvent<Command> = (domainEvent: DomainEvent<Command>) => Promise<Result<void>>;
+export type StoreEvent<DomainEvent> = (
+  prisma: PrismaClient,
+  domainEvent: DomainEvent
+) => Promise<Result<void>>;
 
-export type FindEvents<Command> = (aggregateId: string) => Promise<Result<DomainEvent<Command>[]>>;
+export type FindEvents<DomainEvent> = (
+  prisma: PrismaClient,
+  aggregateId: string
+) => Promise<Result<DomainEvent[]>>;
