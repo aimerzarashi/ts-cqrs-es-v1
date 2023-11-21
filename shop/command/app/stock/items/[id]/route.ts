@@ -4,6 +4,7 @@ import { extractAccountId } from '@/lib/headers/auth';
 import { paths } from '@/schemas/openapi/stockItem';
 import { generate, update, StockItemUpdateCommand } from "@/lib/domain/stock/items/aggregate";
 import { findEvents, storeEvent } from "@/lib/domain/stock/items/repository";
+import { PrismaClient } from "@prisma/client";
 
 type RequestBody = paths['/stock/items/{id}']['put']['requestBody']['content']['application/json'];
 
@@ -16,20 +17,24 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
   if (!extractAccountIdResult.success) {
     console.error(extractAccountIdResult.error);
     return NextResponse.json(
-      { message: 'failed' },
+      { message: 'Unauthorized' },
       { status: 401 }
     );
   }
 
+  const aggregateId: string = params.id;
+
+  const requestBody: RequestBody = await request.json();
   const stockItemUpdateCommand: StockItemUpdateCommand = {
-    name: "test2",
+    name: requestBody.name,
   };
 
-  const findEventsResult = await findEvents(params.id);
+  const prisma = new PrismaClient();
+  const findEventsResult = await findEvents(prisma, aggregateId);
   if (!findEventsResult.success) {
     return NextResponse.json(
-      { message: 'failed' },
-      { status: 400 }
+      { message: 'Not Found' },
+      { status: 404 }
     )
   }
 
@@ -37,8 +42,8 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
   const generateResult = generate(foundDomainEvents);
   if (!generateResult.success) {
     return NextResponse.json(
-      { message: 'failed' },
-      { status: 400 }
+      { message: 'Internal Server Error' },
+      { status: 500 }
     )
   }
 
@@ -46,19 +51,19 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
   const updateResult = update(aggregate, stockItemUpdateCommand);
   if (!updateResult.success) {
     return NextResponse.json(
-      { message: 'failed' },
-      { status: 500 }
+      { message: 'Bad Request' },
+      { status: 400 }
     )
   }
 
   const { domainEvent } = updateResult.value;
-  const storeEventResult = await storeEvent(domainEvent);
+  const storeEventResult = await storeEvent(prisma, domainEvent);
   if (!storeEventResult.success) {
     return NextResponse.json(
-      { message: 'failed' },
+      { message: 'Internal Server Error' },
       { status: 500 }
     )
   }
 
-  return NextResponse.json({ message: 'success' }, { status: 200 });
+  return NextResponse.json({ message: 'OK' }, { status: 200 });
 }
