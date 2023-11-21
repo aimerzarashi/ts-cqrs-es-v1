@@ -14,7 +14,7 @@ paths:
         $ref: "#/components/requestBodies/StockItemCreateCommand"
       responses:
         "201":
-          description: Successful Created
+          description: Created
         "400":
           description: Bad request
         "401":
@@ -37,11 +37,13 @@ paths:
         $ref: "#/components/requestBodies/StockItemUpdateCommand"
       responses:
         "200":
-          description: Successful Updated
+          description: OK
         "400":
           description: Bad request
         "401":
           description: Unauthorized
+        "404":
+          description: Not Found
         "500":
           description: Internal Server Error
 components:
@@ -60,11 +62,8 @@ components:
             properties:
               name:
                 type: string
-              accountId:
-                type: string
             required:
               - name
-              - accountId
     StockItemUpdateCommand:
       required: true
       content:

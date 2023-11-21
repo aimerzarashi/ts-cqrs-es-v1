@@ -10,7 +10,7 @@ export interface paths {
     post: {
       requestBody: components["requestBodies"]["StockItemCreateCommand"];
       responses: {
-        /** @description Successful Created */
+        /** @description Created */
         201: {
           content: never;
         };
@@ -39,7 +39,7 @@ export interface paths {
       };
       requestBody: components["requestBodies"]["StockItemUpdateCommand"];
       responses: {
-        /** @description Successful Updated */
+        /** @description OK */
         200: {
           content: never;
         };
@@ -49,6 +49,10 @@ export interface paths {
         };
         /** @description Unauthorized */
         401: {
+          content: never;
+        };
+        /** @description Not Found */
+        404: {
           content: never;
         };
         /** @description Internal Server Error */
@@ -71,7 +75,6 @@ export interface components {
       content: {
         "application/json": {
           name: string;
-          accountId: string;
         };
       };
     };
