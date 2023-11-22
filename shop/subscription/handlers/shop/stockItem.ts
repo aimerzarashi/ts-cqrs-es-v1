@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { components } from "@/schemas/stockItemEvent";
+import { components } from "@/schemas/asyncapi/stockItemEvent";
 
 type StockItemEventAggregateId = components["schemas"]["StockItemCreatedEvent"]["aggregateId"];
 type StockItemCreatedEventPayload = components["schemas"]["StockItemCreatedEvent"]["payload"];
