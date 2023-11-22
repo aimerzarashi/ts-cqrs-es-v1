@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "asyncapi-codegen": "npx openapi-typescript 'asyncapi/**/*.yaml' --output schemas/",
     "prisma": "npx dotenv -e .env.local -- npx prisma",
     "test": "find ./lib -name '*.test.ts' -exec node --import tsx --test {} \\;",
     "dev": "npx dotenv -e .env.local -- node --import tsx ./routers/shop/stockItem.ts"
@@ -20,6 +21,7 @@
   },
   "dependencies": {
     "@prisma/client": "^5.5.2",
-    "kafkajs": "^2.2.4"
+    "kafkajs": "^2.2.4",
+    "openapi-typescript": "^6.7.1"
   }
 }
