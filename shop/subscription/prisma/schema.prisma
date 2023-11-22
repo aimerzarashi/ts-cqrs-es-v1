@@ -10,7 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model stockItem {
+model StockItem {
   id            String    @id
   accountId     String
   name          String
