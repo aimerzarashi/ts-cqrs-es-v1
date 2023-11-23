@@ -1,0 +1,77 @@
+openapi: 3.0.0
+info:
+  title: Command API
+  version: 1.0.0
+servers:
+  - url: https://shop-command.aimerzarashi.com
+paths:
+  /stock/items:
+    post:
+      summary: Register stock items
+      security:
+        - BearerAuth: []
+      requestBody:
+        $ref: "#/components/requestBodies/StockItemCreateCommand"
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+  /stock/items/{id}:
+    put:
+      summary: Update a stock item
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      security:
+        - BearerAuth: []
+      requestBody:
+        $ref: "#/components/requestBodies/StockItemUpdateCommand"
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  requestBodies:
+    StockItemCreateCommand:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+            required:
+              - name
+    StockItemUpdateCommand:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+            required:
+              - name
