@@ -91,15 +91,20 @@ components:
           type: string
           const: Created
         payload:
-          type: object
-          required:
-            - name
-            - accountId
-          properties:
-            name:
-              type: string
-            accountId:
-              type: string
+          $ref: "#/components/schemas/StockItemCreateCommand"
+    StockItemCreateCommand:
+      type: object
+      required:
+        - id
+        - name
+        - accountId
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        accountId:
+          type: string
     StockItemUpdatedEvent:
       type: object
       required:
@@ -122,10 +127,12 @@ components:
           type: string
           const: Updated
         payload:
-          type: object
-          required:
-            - name
-            - accountId
-          properties:
-            name:
-              type: string
+          $ref: "#/components/schemas/StockItemUpdateCommand"
+    StockItemUpdateCommand:
+      type: object
+      required:
+        - name
+        - accountId
+      properties:
+        name:
+          type: string
