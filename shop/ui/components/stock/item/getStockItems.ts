@@ -15,6 +15,7 @@ export const getStockItems = async (): Promise<StockItem[]> => {
   const client = new Client({
     url: "http://shop-query:5000/graphql",
     exchanges: [fetchExchange],
+    requestPolicy: "network-only",
   });
 
   const stockItemsQuery = graphql(`
@@ -30,16 +31,18 @@ export const getStockItems = async (): Promise<StockItem[]> => {
       }
     }
   `);
-  const { data } = await client.query(stockItemsQuery, {});
-  if (!data?.stockItems?.nodes) {
-    return [];
-  }
 
-  return data?.stockItems?.nodes.map((stockItem) => ({
-    id: stockItem.id,
-    name: stockItem.name,
-    accountId: stockItem.accountId,
-    createdAt: stockItem.createdAt,
-    updatedAt: stockItem.updatedAt,
-  }));
+  return client.query(stockItemsQuery, {}).toPromise().then(({ data }) => {
+    if (!data?.stockItems?.nodes) {
+      return [];
+    }
+    console.debug({ timestamp: new Date().toISOString(), data: data?.stockItems?.nodes });
+    return data?.stockItems?.nodes.map((stockItem) => ({
+      id: stockItem.id,
+      name: stockItem.name,
+      accountId: stockItem.accountId,
+      createdAt: stockItem.createdAt,
+      updatedAt: stockItem.updatedAt,
+    }));
+  })
 };
