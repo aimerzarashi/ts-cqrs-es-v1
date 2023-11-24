@@ -1,3 +1,4 @@
+import React from "react";
 import StockItemList from "@/components/stock/item/stockItemList";
 
 export default function Page() {
