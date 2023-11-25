@@ -2,6 +2,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { AuthProvider } from "@/components/provider/auth";
+import { GraphqlProvider } from "@/components/provider/urql";
 import { getServerSession } from "next-auth/next";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -20,7 +21,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <AuthProvider>
-        <body className={inter.className}>{children}</body>
+        <GraphqlProvider>
+          <body className={inter.className}>{children}</body>
+        </GraphqlProvider>
       </AuthProvider>
     </html>
   );
