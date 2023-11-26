@@ -7,7 +7,13 @@ export default function Home() {
     <main>
       <div className="topMenu">TOP MENU</div>
       <div>
+        <Link href="/stock/items/">Stock Items</Link>
+      </div>
+      <div>
         <Link href="/tests/auth/">Auth Tests</Link>
+      </div>
+      <div>
+        <Link href="/tests/urql/">Urql Tests</Link>
       </div>
     </main>
   );
