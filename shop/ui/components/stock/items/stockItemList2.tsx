@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { useQuery } from "urql";
 import { graphql } from "@/schemas/graphql/gql";
 
@@ -31,7 +32,11 @@ const StockItemList = () => {
   return (
     <ul>
       {data?.stockItems?.nodes?.map((stockItem) => (
-        <li key={stockItem.id}>{stockItem.name}</li>
+        <li key={stockItem.id}>
+          <Link href="/stock/items/[id]" as={`/stock/items/${stockItem.id}`}>
+            {stockItem.name}
+          </Link>
+        </li>
       ))}
     </ul>
   );
