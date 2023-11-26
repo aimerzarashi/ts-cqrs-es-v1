@@ -1,10 +1,14 @@
 import React from "react";
-import StockItemList from "@/components/stock/items/stockItemList";
+import Link from "next/link";
+import StockItemList from "@/components/stock/items/stockItemList2";
 
-export default function Page() {
+const Page = () => {
   return (
     <main>
       <StockItemList />
+      <Link href="/stock/items/create">Create</Link>
     </main>
   );
-}
+};
+
+export default Page;

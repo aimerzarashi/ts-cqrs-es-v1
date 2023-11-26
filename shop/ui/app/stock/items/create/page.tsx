@@ -4,17 +4,16 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth/options";
 import { redirect } from "next/navigation";
 
-const updateStockItem = async (data: FormData) => {
+const createStockItem = async (data: FormData) => {
   "use server";
   const session = await getServerSession(authOptions);
-  const id = data.get("id");
   const name = data.get("name");
   if (!session) {
     throw new Error("No session");
   }
   const token = session.user.authorization.accessToken;
-  const response = await fetch(`http://shop-command:3000/stock/items/${id}`, {
-    method: "PUT",
+  const response = await fetch("http://shop-command:3000/stock/items", {
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
@@ -27,14 +26,12 @@ const updateStockItem = async (data: FormData) => {
   redirect("/stock/items");
 };
 
-const Page = async ({ params }: { params: { id: string } }) => {
+const Page = async () => {
   return (
     <main>
-      <div>{params.id}</div>
-      <form action={updateStockItem}>
-        <input type="hidden" name="id" value={params.id} />
+      <form action={createStockItem}>
         <input type="text" name="name" />
-        <input type="submit" value="Update" />
+        <input type="submit" value="Create" />
       </form>
       <Link href="/stock/items">Back</Link>
     </main>
