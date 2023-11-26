@@ -6,7 +6,10 @@ export default function Page() {
     <>
       <div className="topMenu">Urql Tests</div>
       <div>
-        <Link href="/tests/urql/simple">simple</Link>
+        <Link href="/tests/urql/server">server</Link>
+      </div>
+      <div>
+        <Link href="/tests/urql/client">client</Link>
       </div>
       <div>
         <Link href="/tests/urql/components">components</Link>

@@ -1,13 +1,16 @@
-"use client";
-
 import React from "react";
-import StockItemList from "@/components/stock/items/stockItemList2";
+import Link from "next/link";
 
-const Page = () => {
-  return;
-  <main>
-    <StockItemList />
-  </main>;
-};
-
-export default Page;
+export default function Page() {
+  return (
+    <>
+      <div className="topMenu">Urql Tests components</div>
+      <div>
+        <Link href="/tests/urql/components/server">server</Link>
+      </div>
+      <div>
+        <Link href="/tests/urql/components/client">client</Link>
+      </div>
+    </>
+  );
+}
