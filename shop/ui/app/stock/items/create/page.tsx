@@ -6,12 +6,15 @@ import { redirect } from "next/navigation";
 
 const createStockItem = async (data: FormData) => {
   "use server";
+
   const session = await getServerSession(authOptions);
-  const name = data.get("name");
   if (!session) {
     throw new Error("No session");
   }
   const token = session.user.authorization.accessToken;
+
+  const name = data.get("name");
+
   const response = await fetch("http://shop-command:3000/stock/items", {
     method: "POST",
     headers: {

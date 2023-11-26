@@ -6,13 +6,16 @@ import { redirect } from "next/navigation";
 
 const updateStockItem = async (data: FormData) => {
   "use server";
+
   const session = await getServerSession(authOptions);
-  const id = data.get("id");
-  const name = data.get("name");
   if (!session) {
     throw new Error("No session");
   }
   const token = session.user.authorization.accessToken;
+
+  const id = data.get("id");
+  const name = data.get("name");
+
   const response = await fetch(`http://shop-command:3000/stock/items/${id}`, {
     method: "PUT",
     headers: {
