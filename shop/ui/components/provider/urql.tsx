@@ -17,15 +17,15 @@ export const GraphqlProvider = ({ children }: Props) => {
   const client = new Client({
     url: "https://shop-query.aimerzarashi.com/graphql",
     exchanges: [cacheExchange, fetchExchange],
-    // fetchOptions: () => {
-    //   return {
-    //     headers: {
-    //       Authorization: data?.user.authorization.accessToken
-    //         ? `Bearer ${data?.user.authorization.accessToken}`
-    //         : "",
-    //     },
-    //   };
-    // },
+    fetchOptions: () => {
+      return {
+        headers: {
+          Authorization: data?.user.authorization.accessToken
+            ? `Bearer ${data?.user.authorization.accessToken}`
+            : "",
+        },
+      };
+    },
   });
 
   return <Provider value={client}>{children}</Provider>;
