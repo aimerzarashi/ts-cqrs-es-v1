@@ -164,3 +164,18 @@ components:
                 type: string
             required:
               - locationId
+    ReceiptRequestItem:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              stockItemId:
+                type: string
+                format: uuid
+              quantity:
+                type: integer
+            required:
+              - stockItemId
+              - quantity
