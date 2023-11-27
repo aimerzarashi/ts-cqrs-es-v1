@@ -1,12 +1,12 @@
 import React from "react";
 import Link from "next/link";
-import StockItemList from "@/components/stock/items/stockItemList2";
+import StockItemList from "@/components/stock/items/stockItemList";
 
 const Page = () => {
   return (
     <main>
-      <StockItemList />
       <Link href="/stock/items/create">Create</Link>
+      <StockItemList />
     </main>
   );
 };
