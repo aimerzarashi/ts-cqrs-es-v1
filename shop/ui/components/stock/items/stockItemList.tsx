@@ -1,25 +1,43 @@
 "use client";
 
-import { Suspense } from "react";
+import React from "react";
 import Link from "next/link";
-import { getStockItems, StockItem } from "./getStockItems";
+import { useQuery } from "urql";
+import { graphql } from "@/schemas/graphql/gql";
+
+const stockItemsQuery = graphql(`
+  query getStockItems {
+    stockItems {
+      nodes {
+        id
+        name
+        accountId
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`);
 
 const StockItemList = () => {
+  const [result, reexecuteQuery] = useQuery({
+    query: stockItemsQuery,
+  });
+
+  const { data, fetching, error } = result;
+
+  if (fetching) return <p>Loading...</p>;
+  if (error) return <p>Oh no... {error.message}</p>;
+
   return (
     <ul>
-      <Suspense fallback={<div>Loading...</div>}>
-        {getStockItems().then((items) => {
-          return items.map((item) => {
-            return (
-              <li key={item.id}>
-                <Link href="/stock/items/[id]" as={`/stock/items/${item.id}`}>
-                  {item.name}
-                </Link>
-              </li>
-            );
-          });
-        })}
-      </Suspense>
+      {data?.stockItems?.nodes?.map((stockItem) => (
+        <li key={stockItem.id}>
+          <Link href="/stock/items/[id]" as={`/stock/items/${stockItem.id}`}>
+            {stockItem.name}
+          </Link>
+        </li>
+      ))}
     </ul>
   );
 };
