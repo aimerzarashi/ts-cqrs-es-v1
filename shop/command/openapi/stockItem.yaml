@@ -7,7 +7,7 @@ servers:
 paths:
   /stock/items:
     post:
-      summary: Register stock items
+      summary: Register stock item
       security:
         - BearerAuth: []
       requestBody:
@@ -21,12 +21,12 @@ paths:
           description: Unauthorized
         "500":
           description: Internal Server Error
-  /stock/items/{id}:
+  /stock/items/{stockId}:
     put:
-      summary: Update a stock item
+      summary: Update stock item
       parameters:
         - in: path
-          name: id
+          name: stockId
           required: true
           schema:
             type: string
