@@ -21,12 +21,12 @@ paths:
           description: Unauthorized
         "500":
           description: Internal Server Error
-  /stock/items/{id}:
+  /stock/items/{stockId}:
     put:
       summary: Update stock item
       parameters:
         - in: path
-          name: id
+          name: stockId
           required: true
           schema:
             type: string

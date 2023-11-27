@@ -6,7 +6,7 @@
 
 export interface paths {
   "/stock/items": {
-    /** Register stock items */
+    /** Register stock item */
     post: {
       requestBody: components["requestBodies"]["StockItem"];
       responses: {
@@ -29,12 +29,12 @@ export interface paths {
       };
     };
   };
-  "/stock/items/{id}": {
-    /** Update a stock item */
+  "/stock/items/{stockId}": {
+    /** Update stock item */
     put: {
       parameters: {
         path: {
-          id: string;
+          stockId: string;
         };
       };
       requestBody: components["requestBodies"]["StockItem"];
