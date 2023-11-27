@@ -1,0 +1,166 @@
+openapi: 3.0.0
+info:
+  title: Command API
+  version: 1.0.0
+servers:
+  - url: https://shop-command.aimerzarashi.com
+paths:
+  /receipt/requests:
+    post:
+      summary: Register receipt request
+      security:
+        - BearerAuth: []
+      requestBody:
+        $ref: "#/components/requestBodies/ReceiptRequest"
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+  /receipt/requests/{requestId}:
+    put:
+      summary: Update receipt request
+      parameters:
+        - in: path
+          name: requestId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      security:
+        - BearerAuth: []
+      requestBody:
+        $ref: "#/components/requestBodies/ReceiptRequest"
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+    delete:
+      summary: Delete receipt request
+      parameters:
+        - in: path
+          name: requestId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      security:
+        - BearerAuth: []
+      responses:
+        "202":
+          description: Accepted
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+  /receipt/requests/{requestId}/items:
+    post:
+      summary: Register receipt request item
+      parameters:
+        - in: path
+          name: requestId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      security:
+        - BearerAuth: []
+      requestBody:
+        $ref: "#/components/requestBodies/ReceiptRequestItem"
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+  /receipt/requests/{requestId}/items/{itemId}:
+    put:
+      summary: Update receipt request item
+      parameters:
+        - in: path
+          name: requestId
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: path
+          name: itemId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      security:
+        - BearerAuth: []
+      requestBody:
+        $ref: "#/components/requestBodies/ReceiptRequestItem"
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+    delete:
+      summary: Delete receipt request item
+      parameters:
+        - in: path
+          name: requestId
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: path
+          name: itemId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      security:
+        - BearerAuth: []
+      responses:
+        "202":
+          description: Accepted
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  requestBodies:
+    ReceiptRequest:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              locationId:
+                type: string
+            required:
+              - locationId
