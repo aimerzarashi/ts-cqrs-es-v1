@@ -7,7 +7,7 @@ servers:
 paths:
   /stock/items:
     post:
-      summary: Register stock items
+      summary: Register stock item
       security:
         - BearerAuth: []
       requestBody:
@@ -23,7 +23,7 @@ paths:
           description: Internal Server Error
   /stock/items/{id}:
     put:
-      summary: Update a stock item
+      summary: Update stock item
       parameters:
         - in: path
           name: id
