@@ -11,7 +11,7 @@ paths:
       security:
         - BearerAuth: []
       requestBody:
-        $ref: "#/components/requestBodies/StockItemCreateCommand"
+        $ref: "#/components/requestBodies/StockItem"
       responses:
         "201":
           description: Created
@@ -34,7 +34,7 @@ paths:
       security:
         - BearerAuth: []
       requestBody:
-        $ref: "#/components/requestBodies/StockItemUpdateCommand"
+        $ref: "#/components/requestBodies/StockItem"
       responses:
         "200":
           description: OK
@@ -53,18 +53,7 @@ components:
       scheme: bearer
       bearerFormat: JWT
   requestBodies:
-    StockItemCreateCommand:
-      required: true
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              name:
-                type: string
-            required:
-              - name
-    StockItemUpdateCommand:
+    StockItem:
       required: true
       content:
         application/json:

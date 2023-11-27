@@ -8,7 +8,7 @@ export interface paths {
   "/stock/items": {
     /** Register stock items */
     post: {
-      requestBody: components["requestBodies"]["StockItemCreateCommand"];
+      requestBody: components["requestBodies"]["StockItem"];
       responses: {
         /** @description Created */
         201: {
@@ -37,7 +37,7 @@ export interface paths {
           id: string;
         };
       };
-      requestBody: components["requestBodies"]["StockItemUpdateCommand"];
+      requestBody: components["requestBodies"]["StockItem"];
       responses: {
         /** @description OK */
         200: {
@@ -71,14 +71,7 @@ export interface components {
   responses: never;
   parameters: never;
   requestBodies: {
-    StockItemCreateCommand: {
-      content: {
-        "application/json": {
-          name: string;
-        };
-      };
-    };
-    StockItemUpdateCommand: {
+    StockItem: {
       content: {
         "application/json": {
           name: string;
